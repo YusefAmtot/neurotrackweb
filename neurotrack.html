@@ -1769,8 +1769,8 @@ function gameGoNogo() {
     area.innerHTML=`<div class="text-center">
       <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">${round}/${maxR}</span><span style="font-size:12px;color:var(--dim)">${isGo?'GO':'NO-GO'}</span></div>
       ${progress(round,maxR,'var(--cyan)')}
-      <div id="gng-target" onclick="gngTap()" style="width:120px;height:120px;border-radius:50%;margin:40px auto;background:${circleColor};cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px ${circleColor}40;transition:transform 0.1s">
-        <span style="font-size:32px;color:#fff;font-weight:800">${isGo?'GO':'✕'}</span>
+      <div id="gng-target" onclick="gngTap()" style="width:120px;height:120px;border-radius:50%;margin:40px auto;background:${circleColor};cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px ${circleColor}40;transition:transform 0.1s;user-select:none;-webkit-user-select:none">
+        <span style="font-size:32px;color:#fff;font-weight:800;pointer-events:none;user-select:none">${isGo?'GO':'✕'}</span>
       </div>
       <div style="font-size:12px;color:var(--dim)">${isGo?'Tap the circle!':'Don\'t tap!'}</div>
     </div>`;
@@ -1818,15 +1818,16 @@ function gameDigitSymbol() {
   }
 
   function drawPlay(){
-    const keyHtml=symbols.map((s,i)=>`<div style="text-align:center;font-size:10px"><div style="font-size:16px">${s}</div><div style="color:var(--dim)">${i+1}</div></div>`).join('');
+    const keyHtml=symbols.map((s,i)=>`<div style="text-align:center;font-size:10px"><div style="font-size:18px;font-weight:700;color:var(--text)">${s}</div><div style="color:var(--dim);font-weight:600">${i+1}</div></div>`).join('');
+    const btnColors=['#ef4444','#3b82f6','#22c55e','#eab308','#8b5cf6','#ec4899','#f97316','#06b6d4','#6366f1'];
     area.innerHTML=`<div class="text-center">
       <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim)">Matched: ${correct}</span><span id="ds-timer" style="font-size:13px;color:${timeLeft<=10?'var(--danger)':'var(--accent)'};font-weight:700">${timeLeft}s</span></div>
       <div class="progress"><div class="progress-fill" id="ds-prog" style="width:${(60-timeLeft)/60*100}%;background:var(--purple)"></div></div>
-      <div style="display:flex;justify-content:space-between;padding:10px 4px;margin:16px 0 8px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">${keyHtml}</div>
+      <div style="display:flex;justify-content:space-between;padding:10px 6px;margin:16px 0 8px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">${keyHtml}</div>
       <div style="font-size:14px;color:var(--dim);margin:12px 0 4px">Which symbol matches:</div>
       <div style="font-size:48px;font-weight:900;color:var(--accent);margin-bottom:16px">${currentDigit}</div>
       <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
-        ${symbols.map((s,i)=>`<button onclick="dsTap(${i+1})" style="width:52px;height:52px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-size:22px;cursor:pointer;transition:all 0.12s">${s}</button>`).join('')}
+        ${symbols.map((s,i)=>`<button onclick="dsTap(${i+1})" style="width:62px;height:62px;border-radius:14px;border:2px solid rgba(255,255,255,0.15);background:${btnColors[i]};font-size:26px;cursor:pointer;transition:all 0.12s;color:#fff;font-weight:700;box-shadow:0 3px 12px ${btnColors[i]}40;user-select:none">${s}</button>`).join('')}
       </div>
     </div>`;
   }
