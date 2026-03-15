@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroTrack — Cognitive Assessment</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ═══ DARK THEME (default) ═══ */
+:root, [data-theme="dark"] {
+  --bg:#06080d;
+  --surface:#151a25;
+  --surface-h:#1c2233;
+  --card:#1a2030;
+  --card-h:#212840;
+  --border:rgba(160,190,255,0.10);
+  --border-h:rgba(160,190,255,0.22);
+  --text:#eaf0ff;
+  --dim:#8896b0;
+  --faint:#546380;
+  --accent:#5b9aff;
+  --accent-dim:rgba(91,154,255,0.14);
+  --accent-glow:rgba(91,154,255,0.30);
+  --success:#2ee8a5;
+  --warning:#ffbe2e;
+  --danger:#ff6b6b;
+  --purple:#b08dff;
+  --cyan:#1fd4e8;
+  --nav-bg:rgba(6,8,13,0.92);
+  --chart-grid:rgba(255,255,255,0.05);
+  --chart-border:rgba(255,255,255,0.08);
+  --chart-label:#8896b0;
+  --chart-inset:rgba(6,8,13,0.4);
+  --scroll-thumb:rgba(255,255,255,0.1);
+  --modal-bg:rgba(0,0,0,0.7);
+  --stroop-border:rgba(255,255,255,0.1);
+  --stroop-border-h:rgba(255,255,255,0.25);
+  --cell-bg:rgba(91,154,255,0.06);
+  --cell-border:rgba(91,154,255,0.12);
+  --cell-border-h:rgba(91,154,255,0.2);
+  --cell-bg-h:rgba(91,154,255,0.10);
+  --avatar-bg:linear-gradient(135deg,rgba(91,154,255,0.2),rgba(176,141,255,0.15));
+  --avatar-border:rgba(91,154,255,0.2);
+  --mem-bg:rgba(91,154,255,0.10);    --mem-border:rgba(91,154,255,0.25);
+  --react-bg:rgba(255,190,46,0.10);  --react-border:rgba(255,190,46,0.25);
+  --recall-bg:rgba(46,232,165,0.10); --recall-border:rgba(46,232,165,0.25);
+  --exec-bg:rgba(255,107,107,0.10);  --exec-border:rgba(255,107,107,0.25);
+  --comp-bg:rgba(176,141,255,0.10);  --comp-border:rgba(176,141,255,0.25);
+  --trails-bg:rgba(255,160,60,0.10); --trails-border:rgba(255,160,60,0.25);
+  --gonogo-bg:rgba(56,189,248,0.10); --gonogo-border:rgba(56,189,248,0.25);
+  --dsym-bg:rgba(232,121,249,0.10);  --dsym-border:rgba(232,121,249,0.25);
+  --flu-bg:rgba(163,230,53,0.10);    --flu-border:rgba(163,230,53,0.25);
+  --logo-gradient:linear-gradient(135deg,#5b9aff,#b08dff);
+  --logo-shadow:0 2px 12px rgba(91,154,255,0.3);
+}
+
+/* ═══ LIGHT THEME ═══ */
+[data-theme="light"] {
+  --bg:#f4f6fb;
+  --surface:#e8ecf4;
+  --surface-h:#dce1ec;
+  --card:#ffffff;
+  --card-h:#f0f2f8;
+  --border:rgba(60,80,130,0.12);
+  --border-h:rgba(60,80,130,0.22);
+  --text:#1a2035;
+  --dim:#5e6a82;
+  --faint:#8a94a8;
+  --accent:#3670e0;
+  --accent-dim:rgba(54,112,224,0.10);
+  --accent-glow:rgba(54,112,224,0.18);
+  --success:#0fad78;
+  --warning:#d49700;
+  --danger:#d94040;
+  --purple:#7c5cbf;
+  --cyan:#0da5b8;
+  --nav-bg:rgba(244,246,251,0.92);
+  --chart-grid:rgba(0,0,0,0.06);
+  --chart-border:rgba(0,0,0,0.10);
+  --chart-label:#5e6a82;
+  --chart-inset:rgba(0,0,0,0.03);
+  --scroll-thumb:rgba(0,0,0,0.12);
+  --modal-bg:rgba(0,0,0,0.35);
+  --stroop-border:rgba(0,0,0,0.12);
+  --stroop-border-h:rgba(0,0,0,0.25);
+  --cell-bg:rgba(54,112,224,0.06);
+  --cell-border:rgba(54,112,224,0.15);
+  --cell-border-h:rgba(54,112,224,0.25);
+  --cell-bg-h:rgba(54,112,224,0.12);
+  --avatar-bg:linear-gradient(135deg,rgba(54,112,224,0.12),rgba(124,92,191,0.10));
+  --avatar-border:rgba(54,112,224,0.18);
+  --mem-bg:rgba(54,112,224,0.08);    --mem-border:rgba(54,112,224,0.22);
+  --react-bg:rgba(212,151,0,0.08);   --react-border:rgba(212,151,0,0.22);
+  --recall-bg:rgba(15,173,120,0.08);  --recall-border:rgba(15,173,120,0.22);
+  --exec-bg:rgba(217,64,64,0.08);    --exec-border:rgba(217,64,64,0.22);
+  --comp-bg:rgba(124,92,191,0.08);   --comp-border:rgba(124,92,191,0.22);
+  --trails-bg:rgba(200,100,20,0.08); --trails-border:rgba(200,100,20,0.22);
+  --gonogo-bg:rgba(14,140,200,0.08); --gonogo-border:rgba(14,140,200,0.22);
+  --dsym-bg:rgba(180,60,200,0.08);   --dsym-border:rgba(180,60,200,0.22);
+  --flu-bg:rgba(100,160,20,0.08);    --flu-border:rgba(100,160,20,0.22);
+  --logo-gradient:linear-gradient(135deg,#3670e0,#7c5cbf);
+  --logo-shadow:0 2px 12px rgba(54,112,224,0.25);
+}
+/* Light mode card shadows for depth */
+[data-theme="light"] .card{box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+[data-theme="light"] .patient-row{box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+[data-theme="light"] .patient-row:hover{box-shadow:0 3px 16px rgba(54,112,224,0.10)}
+[data-theme="light"] .btn{box-shadow:0 2px 10px var(--accent-glow)}
+[data-theme="light"] .nav{border-bottom-color:rgba(0,0,0,0.08)}
+
+/* Smooth theme transition */
+body,
+.nav, .card, .patient-row, .btn, .input, .badge, .log-row, .slope-row,
+.react-box, .game-cell, .score-mini, .chart-wrap, .progress {
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:2px}
+input,textarea{font-family:inherit;outline:none}
+input:focus,textarea:focus{border-color:var(--accent)!important}
+button{font-family:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+/* NAV — anchored strip */
+.nav{display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--nav-bg);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.nav-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--logo-gradient);box-shadow:var(--logo-shadow);padding:5px}
+.nav-icon svg{width:22px;height:22px}
+.nav-title{font-size:15px;font-weight:800;letter-spacing:-0.5px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-meta{font-size:11px;color:var(--faint)}
+
+/* THEME TOGGLE */
+.theme-toggle{
+  width:44px;height:24px;border-radius:12px;border:1px solid var(--border);
+  background:var(--surface);cursor:pointer;position:relative;
+  transition:background 0.3s,border-color 0.3s;padding:0;
+}
+.theme-toggle:hover{border-color:var(--border-h)}
+.theme-toggle-knob{
+  width:18px;height:18px;border-radius:50%;
+  position:absolute;top:2px;left:2px;
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),background 0.3s;
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+  background:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,0.2);
+}
+[data-theme="light"] .theme-toggle-knob{transform:translateX(20px);background:var(--warning)}
+
+/* LAYOUT */
+.container{max-width:800px;margin:0 auto;padding:20px 16px;animation:fadeUp 0.4s ease}
+
+/* CARD — clearly raised from background */
+.card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;margin-bottom:12px;transition:border-color 0.2s}
+.card:hover{border-color:var(--border-h)}
+.card-accent{background:linear-gradient(135deg,rgba(91,154,255,0.06),rgba(176,141,255,0.04));border-color:var(--comp-border)}
+
+/* DOMAIN-TINTED CARDS — each domain gets a unique background tint */
+.card-memory{background:linear-gradient(135deg,var(--mem-bg),var(--card));border-color:var(--mem-border)}
+.card-reaction{background:linear-gradient(135deg,var(--react-bg),var(--card));border-color:var(--react-border)}
+.card-recall{background:linear-gradient(135deg,var(--recall-bg),var(--card));border-color:var(--recall-border)}
+.card-executive{background:linear-gradient(135deg,var(--exec-bg),var(--card));border-color:var(--exec-border)}
+.card-trails{background:linear-gradient(135deg,var(--trails-bg),var(--card));border-color:var(--trails-border)}
+.card-gonogo{background:linear-gradient(135deg,var(--gonogo-bg),var(--card));border-color:var(--gonogo-border)}
+.card-digitsymbol{background:linear-gradient(135deg,var(--dsym-bg),var(--card));border-color:var(--dsym-border)}
+.card-fluency{background:linear-gradient(135deg,var(--flu-bg),var(--card));border-color:var(--flu-border)}
+
+/* BUTTONS — solid accent, clear against cards */
+.btn{border:none;cursor:pointer;font-weight:600;border-radius:12px;transition:all 0.15s;font-size:14px;padding:12px 24px;background:var(--accent);color:#fff;box-shadow:0 2px 16px var(--accent-glow)}
+.btn:hover{box-shadow:0 4px 24px var(--accent-glow);transform:translateY(-1px)}
+.btn:active{transform:scale(0.97)}
+.btn-sm{font-size:12px;padding:7px 14px;border-radius:8px}
+.btn-ghost{background:var(--surface);color:var(--dim);border:1px solid var(--border);box-shadow:none}
+.btn-ghost:hover{background:var(--surface-h);border-color:var(--border-h);color:var(--text)}
+.btn-danger{background:rgba(255,107,107,0.12);color:var(--danger);box-shadow:none;border:1px solid rgba(255,107,107,0.2)}
+.btn-danger:hover{background:rgba(255,107,107,0.2)}
+.btn-secondary{background:var(--accent-dim);color:var(--accent);box-shadow:none}
+
+/* INPUT — sunken look, darker than card */
+.input{width:100%;padding:11px 16px;border-radius:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-size:14px;transition:border-color 0.2s}
+
+/* BADGE — with stronger backgrounds */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:8px;font-size:12px;font-weight:600}
+.badge-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+
+/* PROGRESS — visible track */
+.progress{height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.4s ease}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.flex-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.text-center{text-align:center}
+.gap-8{gap:8px}
+.gap-12{gap:12px}
+.gap-16{gap:16px}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.mb-20{margin-bottom:20px}
+.mb-24{margin-bottom:24px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+
+/* PATIENT ROW — distinct from background, hover clearly different */
+.patient-row{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:all 0.2s;margin-bottom:8px}
+.patient-row:hover{border-color:var(--accent);background:var(--card-h);box-shadow:0 2px 20px var(--accent-glow)}
+.patient-avatar{width:40px;height:40px;border-radius:12px;background:var(--avatar-bg);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent);flex-shrink:0;border:1px solid var(--avatar-border)}
+.patient-info{flex:1;min-width:0}
+.patient-name{font-size:14px;font-weight:700}
+.patient-meta{font-size:11px;color:var(--dim);margin-top:1px}
+.patient-score{text-align:right}
+.patient-score-num{font-size:18px;font-weight:800}
+
+/* GAME GRID — cells visible against card */
+.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:340px;margin:32px auto 0}
+.game-cell{aspect-ratio:1;border-radius:16px;border:1px solid var(--cell-border);cursor:pointer;transition:all 0.18s cubic-bezier(0.4,0,0.2,1);background:var(--cell-bg);min-height:80px}
+.game-cell:hover{background:var(--cell-bg-h);border-color:var(--cell-border-h)}
+.game-cell.active{background:linear-gradient(135deg,var(--accent),var(--purple));transform:scale(0.9);box-shadow:0 0 28px var(--accent-glow);border-color:transparent}
+.game-cell.dim{opacity:0.4}
+
+/* REACTION BOX */
+.react-box{width:100%;max-width:340px;height:210px;border-radius:20px;border:2px solid var(--border);cursor:pointer;transition:all 0.25s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin:0 auto;background:var(--surface)}
+
+/* STROOP COLORS — larger with stronger shadow */
+.stroop-btn{width:68px;height:68px;border-radius:16px;border:2px solid var(--stroop-border);cursor:pointer;transition:all 0.12s}
+.stroop-btn:hover{transform:scale(1.05);border-color:var(--stroop-border-h)}
+.stroop-btn:active{transform:scale(0.88)}
+
+/* WORD CHIPS */
+.word-chip{padding:10px 18px;border-radius:12px;font-size:15px;font-weight:700;letter-spacing:2px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
+
+/* SCORE MINI CARD — tinted per domain */
+.score-mini{padding:8px 10px;border-radius:10px;background:var(--surface);text-align:center;border:1px solid var(--border)}
+.score-mini-label{font-size:10px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score-mini-val{font-size:18px;font-weight:700}
+
+/* SESSION LOG ROW — alternating subtle tones */
+.log-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:var(--surface);margin-bottom:6px;border:1px solid transparent;transition:border-color 0.2s}
+.log-row:hover{border-color:var(--border)}
+
+/* SLOPE ROW */
+.slope-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:var(--surface);margin-bottom:8px;border-left:3px solid transparent}
+.slope-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* CHART — visible container */
+.chart-wrap{position:relative;width:100%;height:280px;background:var(--chart-inset);border-radius:12px;padding:8px}
+.chart-wrap-sm{height:220px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:var(--modal-bg);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(6px)}
+.modal-box{max-width:360px;width:90%}
+
+/* TASK DOTS */
+.task-dots{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.task-dot{height:10px;border-radius:5px;transition:all 0.3s}
+
+/* BACK LINK */
+.back-link{background:none;border:none;color:var(--dim);cursor:pointer;font-size:12px;padding:0;margin-bottom:16px;display:block;transition:color 0.15s}
+.back-link:hover{color:var(--accent)}
+
+/* SECTION TITLES inside cards */
+.section-title{font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .grid-2{grid-template-columns:1fr}
+  .grid-auto{grid-template-columns:repeat(2,1fr)}
+}
+
+/* HIDDEN */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo" onclick="navigate('list')">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2C9.5 2 7.5 3.5 7 5.5C5 5.5 3 7.5 3 10c0 2 1.2 3.7 3 4.4C6 16 7.5 18 10 18.5V22h4v-3.5c2.5-.5 4-2.5 4-4.1 1.8-.7 3-2.4 3-4.4 0-2.5-2-4.5-4-4.5C16.5 3.5 14.5 2 12 2z"/>
+        <path d="M12 2v8" opacity="0.5"/>
+        <path d="M8 8c1.5 1 3.5 1 5 0" opacity="0.5"/>
+        <path d="M9 13c1 .8 2.5 1 4 0" opacity="0.5"/>
+      </svg>
+    </div>
+    <span class="nav-title">NeuroTrack</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-meta" id="nav-meta"></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+      <div class="theme-toggle-knob" id="theme-knob">
+        <span id="theme-icon">🌙</span>
+      </div>
+    </button>
+  </div>
+</nav>
+
+<div class="container" id="app"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THEME TOGGLE (persisted in localStorage)
+   ════════════════════════════════════════════════════════════════════ */
+function getTheme() {
+  return localStorage.getItem('nt_theme') || 'dark';
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
+}
+function toggleTheme() {
+  const current = getTheme();
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('nt_theme', next);
+  applyTheme(next);
+  // Redraw charts with new colors if on dashboard
+  if (state.view === 'detail') {
+    destroyCharts();
+    DB.loadPatient(state.activeId).then(p => {
+      if (p && p.sessions.length > 0) {
+        setTimeout(() => {
+          renderTrajectoryChart(p.sessions);
+          const preds = predictFuture(p.sessions, 6);
+          if (preds.length > 0) renderPredictionChart(p.sessions, preds);
+        }, 100);
+      }
+    });
+  }
+}
+// Apply saved theme on load
+applyTheme(getTheme());
+
+/* ════════════════════════════════════════════════════════════════════
+   MULTI-ACCOUNT SYSTEM
+   Each clinician creates a username + PIN.
+   Each account has its own encryption key and isolated patient data.
+   Account list (usernames only) is stored unencrypted so the login
+   screen can show them. All patient data is encrypted per-account.
+   ════════════════════════════════════════════════════════════════════ */
+
+// Account registry — stores {username: {created, salt(b64)}} unencrypted
+const ACCOUNTS = {
+  _KEY: 'nt_accounts',
+  load() { try { return JSON.parse(localStorage.getItem(this._KEY)) || {}; } catch { return {}; } },
+  save(accts) { localStorage.setItem(this._KEY, JSON.stringify(accts)); },
+  exists(username) { return !!this.load()[username]; },
+  list() { return Object.keys(this.load()); },
+  add(username, saltB64) {
+    const a = this.load();
+    a[username] = { created: new Date().toISOString(), salt: saltB64 };
+    this.save(a);
+  },
+  remove(username) {
+    const a = this.load();
+    delete a[username];
+    this.save(a);
+  },
+  getSalt(username) {
+    const a = this.load();
+    if (!a[username]) return null;
+    return Uint8Array.from(atob(a[username].salt), c => c.charCodeAt(0));
+  },
+  hasAny() { return this.list().length > 0; }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   ENCRYPTION LAYER (AES-256-GCM via Web Crypto API)
+   Key derived from username+PIN via PBKDF2. Per-user salt.
+   ════════════════════════════════════════════════════════════════════ */
+const CRYPTO = {
+  _enc: new TextEncoder(),
+  _dec: new TextDecoder(),
+
+  async deriveKey(username, pin) {
+    const salt = ACCOUNTS.getSalt(username);
+    if (!salt) throw new Error('Account not found');
+    const combined = username.toLowerCase().trim() + ':' + pin;
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', this._enc.encode(combined), 'PBKDF2', false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  },
+
+  async encrypt(data, key) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encrypted = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv }, key,
+      this._enc.encode(JSON.stringify(data))
+    );
+    return btoa(String.fromCharCode(...iv) + String.fromCharCode(...new Uint8Array(encrypted)));
+  },
+
+  async decrypt(ciphertext, key) {
+    try {
+      const raw = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
+      const iv = raw.slice(0, 12);
+      const data = raw.slice(12);
+      const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+      return JSON.parse(this._dec.decode(decrypted));
+    } catch { return null; }
+  },
+
+  async createVerifier(username, pin) {
+    const key = await this.deriveKey(username, pin);
+    const token = await this.encrypt({ v: 'neurotrack_ok', u: username, t: Date.now() }, key);
+    localStorage.setItem('nt_v_' + username.toLowerCase().trim(), token);
+    return key;
+  },
+
+  async verify(username, pin) {
+    const stored = localStorage.getItem('nt_v_' + username.toLowerCase().trim());
+    if (!stored) return null;
+    const key = await this.deriveKey(username, pin);
+    const result = await this.decrypt(stored, key);
+    if (result && result.v === 'neurotrack_ok') return key;
+    return null;
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   ENCRYPTED DATABASE (scoped per user)
+   All keys prefixed with nt_{username}_ so accounts are isolated.
+   ════════════════════════════════════════════════════════════════════ */
+let _cryptoKey = null;
+let _activeUser = null;
+
+const DB = {
+  _prefix() { return 'nt_u_' + (_activeUser || 'none') + '_'; },
+
+  async _get(k) {
+    try {
+      const raw = localStorage.getItem(this._prefix() + k);
+      if (!raw || !_cryptoKey) return null;
+      return await CRYPTO.decrypt(raw, _cryptoKey);
+    } catch { return null; }
+  },
+  async _set(k, v) {
+    if (!_cryptoKey) return;
+    const encrypted = await CRYPTO.encrypt(v, _cryptoKey);
+    localStorage.setItem(this._prefix() + k, encrypted);
+  },
+  _del(k) { localStorage.removeItem(this._prefix() + k); },
+
+  async loadIndex() { return (await this._get('index')) || {}; },
+  async saveIndex(idx) { await this._set('index', idx); },
+  async loadPatient(id) { return await this._get('p_' + id); },
+  async savePatient(id, data) { await this._set('p_' + id, data); },
+  deletePatient(id) { this._del('p_' + id); },
+
+  async getAllPatients() {
+    const idx = await this.loadIndex();
+    const out = {};
+    for (const id of Object.keys(idx)) {
+      const p = await this.loadPatient(id);
+      if (p) out[id] = p;
+    }
+    return out;
+  },
+  async save(id, data) {
+    await this.savePatient(id, data);
+    const idx = await this.loadIndex();
+    idx[id] = true;
+    await this.saveIndex(idx);
+  },
+  async remove(id) {
+    this.deletePatient(id);
+    const idx = await this.loadIndex();
+    delete idx[id];
+    await this.saveIndex(idx);
+  },
+  purgeCurrentUser() {
+    const prefix = this._prefix();
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) keys.push(k);
+    }
+    keys.forEach(k => localStorage.removeItem(k));
+    // Remove verifier and account entry
+    if (_activeUser) {
+      localStorage.removeItem('nt_v_' + _activeUser.toLowerCase().trim());
+      ACCOUNTS.remove(_activeUser);
+    }
+  },
+  purgeAll() {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('nt_') && k !== 'nt_theme') keys.push(k);
+    }
+    keys.forEach(k => localStorage.removeItem(k));
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   AUTO-LOCK (locks after 5 minutes of inactivity)
+   ════════════════════════════════════════════════════════════════════ */
+let _autoLockTimer = null;
+const AUTO_LOCK_MS = 5 * 60 * 1000;
+
+function resetAutoLock() {
+  clearTimeout(_autoLockTimer);
+  if (_cryptoKey) {
+    _autoLockTimer = setTimeout(() => {
+      _cryptoKey = null;
+      _activeUser = null;
+      state.view = 'login';
+      state.activeId = null;
+      state.session = null;
+      render();
+    }, AUTO_LOCK_MS);
+  }
+}
+['click','keydown','mousemove','touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetAutoLock, { passive: true });
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   DATA EXPORT (UK GDPR Article 15)
+   ════════════════════════════════════════════════════════════════════ */
+async function exportAllData() {
+  const patients = await DB.getAllPatients();
+  const exportData = {
+    exportDate: new Date().toISOString(),
+    application: 'NeuroTrack Cognitive Assessment',
+    account: _activeUser,
+    dataController: 'Local device — no server storage',
+    patients: Object.values(patients).map(p => ({
+      id: p.id, name: p.name, age: p.age, notes: p.notes,
+      consentDate: p.consentDate, createdAt: p.createdAt, sessions: p.sessions,
+    })),
+  };
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'neurotrack_' + (_activeUser||'export') + '_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function exportPatientData(id) {
+  const p = await DB.loadPatient(id);
+  if (!p) return;
+  const blob = new Blob([JSON.stringify(p, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'neurotrack_' + p.name.replace(/\s+/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function genId() { return 'p_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+/* ════════════════════════════════════════════════════════════════════
+   ML ENGINE
+   ════════════════════════════════════════════════════════════════════ */
+function linReg(pts) {
+  const n=pts.length;
+  if(n<2) return {slope:0,intercept:pts[0]?.y||0,r2:0};
+  let sx=0,sy=0,sxy=0,sx2=0;
+  for(const p of pts){sx+=p.x;sy+=p.y;sxy+=p.x*p.y;sx2+=p.x*p.x;}
+  const d=n*sx2-sx*sx;
+  if(d===0) return {slope:0,intercept:sy/n,r2:0};
+  const slope=(n*sxy-sx*sy)/d, intercept=(sy-slope*sx)/n, yM=sy/n;
+  let ssTot=0,ssRes=0;
+  for(const p of pts){ssTot+=(p.y-yM)**2;ssRes+=(p.y-(slope*p.x+intercept))**2;}
+  return {slope,intercept,r2:ssTot===0?0:Math.max(0,1-ssRes/ssTot)};
+}
+
+function predictFuture(history,ahead=6){
+  if(history.length<2) return [];
+  const raw=history.map(h=>h.composite),sm=[raw[0]];
+  for(let i=1;i<raw.length;i++) sm.push(0.3*raw[i]+0.7*sm[i-1]);
+  const pts=sm.map((y,i)=>({x:i,y})),reg=linReg(pts);
+  const res=pts.map(p=>p.y-(reg.slope*p.x+reg.intercept));
+  const rse=Math.sqrt(res.reduce((a,r)=>a+r*r,0)/Math.max(1,pts.length-2));
+  const preds=[];
+  for(let i=1;i<=ahead;i++){
+    const x=pts.length-1+i,pred=Math.max(0,Math.min(100,reg.slope*x+reg.intercept));
+    const ci=Math.max(rse*1.96*Math.sqrt(1+1/pts.length),4)+i*1.2;
+    preds.push({month:i,predicted:Math.round(pred*10)/10,lower:Math.round(Math.max(0,pred-ci)*10)/10,upper:Math.round(Math.min(100,pred+ci)*10)/10});
+  }
+  return preds;
+}
+
+function assessRisk(history){
+  if(history.length<2) return 'insufficient';
+  const recent=history.slice(-5),pts=recent.map((h,i)=>({x:i,y:h.composite})),{slope}=linReg(pts);
+  const vals=history.map(h=>h.composite),mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+  const std=Math.sqrt(vals.reduce((a,v)=>a+(v-mean)**2,0)/vals.length),cv=mean>0?std/mean:0;
+  let accel=0;
+  if(history.length>=6){const e=history.slice(0,3).map((h,i)=>({x:i,y:h.composite})),l=history.slice(-3).map((h,i)=>({x:i,y:h.composite}));accel=linReg(l).slope-linReg(e).slope;}
+  let sc=0;
+  if(slope<-4)sc+=3;else if(slope<-2)sc+=2;else if(slope<-0.5)sc+=1;
+  if(accel<-1)sc+=1.5;if(cv>0.12)sc+=1;
+  if(slope>1.5)return'improving';if(sc<=0.5)return'stable';if(sc<=2)return'mild';if(sc<=4.5)return'moderate';return'significant';
+}
+
+function computeComposite(s){
+  // Weights reflect clinical sensitivity: recall & memory highest for AD detection
+  const w={memory:0.15,reaction:0.10,delayedRecall:0.20,executive:0.10,trails:0.15,gonogo:0.10,digitSymbol:0.10,fluency:0.10};
+  let t=0,ws=0;for(const[k,v]of Object.entries(w)){if(s[k]!=null){t+=s[k]*v;ws+=v;}}
+  return ws>0?Math.round(t/ws*10)/10:0;
+}
+
+function getDomainSlopes(h){
+  const ds=['memory','reaction','delayedRecall','executive','trails','gonogo','digitSymbol','fluency'],r={};
+  for(const d of ds){const pts=h.map((x,i)=>({x:i,y:x[d]||0}));r[d]=linReg(pts);}
+  return r;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   DOMAIN CONFIG
+   ════════════════════════════════════════════════════════════════════ */
+const DOMAIN={
+  memory:{color:'#5b9aff',label:'Working Memory',icon:'🧠',cardClass:'card-memory'},
+  reaction:{color:'#ffbe2e',label:'Processing Speed',icon:'⚡',cardClass:'card-reaction'},
+  delayedRecall:{color:'#2ee8a5',label:'Delayed Recall',icon:'📝',cardClass:'card-recall'},
+  executive:{color:'#ff6b6b',label:'Executive Function',icon:'🎨',cardClass:'card-executive'},
+  trails:{color:'#ffa03c',label:'Trail Making',icon:'🔗',cardClass:'card-trails'},
+  gonogo:{color:'#38bdf8',label:'Sustained Attention',icon:'🎯',cardClass:'card-gonogo'},
+  digitSymbol:{color:'#e879f9',label:'Symbol Speed',icon:'🔢',cardClass:'card-digitsymbol'},
+  fluency:{color:'#a3e635',label:'Verbal Fluency',icon:'💬',cardClass:'card-fluency'},
+  composite:{color:'#b08dff',label:'Composite Score',icon:'📊',cardClass:'card-accent'},
+};
+const RISK_INFO={
+  insufficient:{label:'Not Enough Data',color:'#8896b0',bg:'rgba(136,150,176,0.12)'},
+  stable:{label:'Stable',color:'#2ee8a5',bg:'rgba(46,232,165,0.12)'},
+  mild:{label:'Mild Concern',color:'#ffbe2e',bg:'rgba(255,190,46,0.12)'},
+  moderate:{label:'Moderate Decline',color:'#ff9640',bg:'rgba(255,150,64,0.12)'},
+  significant:{label:'Significant Decline',color:'#ff6b6b',bg:'rgba(255,107,107,0.12)'},
+  improving:{label:'Improving',color:'#1fd4e8',bg:'rgba(31,212,232,0.12)'},
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════════════════════ */
+let state = {
+  view: 'login',  // Always start at login
+  activeId: null,
+  session: null,
+  charts: {},
+};
+
+function navigate(view, id) {
+  destroyCharts();
+  state.view = view;
+  if (id !== undefined) state.activeId = id;
+  if (view !== 'session') state.session = null;
+  render();
+}
+
+function destroyCharts() {
+  for (const c of Object.values(state.charts)) { try { c.destroy(); } catch {} }
+  state.charts = {};
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   HTML HELPERS
+   ════════════════════════════════════════════════════════════════════ */
+function badge(risk) {
+  const ri = RISK_INFO[risk] || RISK_INFO.insufficient;
+  return `<span class="badge" style="background:${ri.bg};border:1px solid ${ri.color}20;color:${ri.color}"><span class="badge-dot" style="background:${ri.color}"></span>${ri.label}</span>`;
+}
+
+function progress(value, max, color='var(--accent)') {
+  return `<div class="progress"><div class="progress-fill" style="width:${Math.min(100,(value/max)*100)}%;background:${color}"></div></div>`;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   RENDER ROUTER (async — DB is encrypted)
+   ════════════════════════════════════════════════════════════════════ */
+async function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.style.animation = 'none';
+  void app.offsetHeight;
+  app.style.animation = 'fadeUp 0.4s ease';
+
+  if (state.view === 'login') { renderLogin(app); return; }
+  if (state.view === 'create') { renderCreate(app); return; }
+  if (state.view === 'selfhome') { renderSelfHome(app); return; }
+  if (state.view === 'selftest') { renderSelfTest(app); return; }
+  if (state.view === 'selfresults') { renderSelfResults(app); return; }
+
+  const patients = await DB.getAllPatients();
+  const meta = document.getElementById('nav-meta');
+  if (meta) meta.textContent = (_activeUser ? '👤 ' + _activeUser + ' · ' : '') + Object.keys(patients).length + ' patient' + (Object.keys(patients).length!==1?'s':'') + ' · 🔒 encrypted';
+
+  switch (state.view) {
+    case 'list': renderList(app, patients); break;
+    case 'new': renderNew(app); break;
+    case 'detail': await renderDetail(app, patients[state.activeId]); break;
+    case 'session': renderSession(app, patients[state.activeId]); break;
+    case 'privacy': renderPrivacy(app); break;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: LOGIN
+   ════════════════════════════════════════════════════════════════════ */
+function renderLogin(app) {
+  const accounts = ACCOUNTS.list();
+  const hasAccounts = accounts.length > 0;
+
+  app.innerHTML = `
+    <div style="max-width:420px;margin:50px auto 0;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">🧠</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:6px">NeuroTrack</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:32px;line-height:1.7">
+        Longitudinal cognitive assessment<br>with ML-powered decline prediction
+      </div>
+
+      ${hasAccounts ? `
+        <div class="card" style="text-align:left">
+          <div style="font-size:14px;font-weight:700;margin-bottom:16px">Log In</div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Username</label>
+            <select class="input" id="login-user" style="cursor:pointer">
+              ${accounts.map(u => `<option value="${u}">${u}</option>`).join('')}
+            </select>
+          </div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">PIN</label>
+            <input class="input" id="login-pin" type="password" placeholder="Enter your PIN" style="letter-spacing:2px">
+          </div>
+          <div id="login-err" style="font-size:12px;color:var(--danger);margin-bottom:10px;min-height:18px"></div>
+          <button class="btn" style="width:100%" onclick="handleLogin()">Log In</button>
+        </div>
+        <div style="margin-top:16px">
+          <button class="btn btn-ghost btn-sm" onclick="state.view='create';render()">+ Create New Account</button>
+        </div>
+      ` : `
+        <div class="card" style="text-align:center;padding:32px 20px">
+          <div style="font-size:32px;margin-bottom:12px">👤</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px">No accounts yet</div>
+          <div style="font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.6">Create your clinician account to get started.<br>Each account has its own encrypted patient data.</div>
+          <button class="btn" onclick="state.view='create';render()">Create Account</button>
+        </div>
+      `}
+
+      <div style="margin-top:24px;font-size:11px;color:var(--faint);line-height:1.6">
+        🔒 All data encrypted with AES-256 · Stored on this device only · Never sent to a server
+      </div>
+
+      <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border)">
+        <div style="font-size:13px;color:var(--dim);margin-bottom:12px">Not a clinician?</div>
+        <button class="btn btn-secondary" style="width:100%;max-width:280px" onclick="state.view='selfhome';render()">
+          🏠 Self-Test at Home
+        </button>
+        <div style="font-size:11px;color:var(--faint);margin-top:8px;line-height:1.5">
+          Track your own cognitive health over time.<br>No account needed — results saved privately on your device.
+        </div>
+      </div>
+    </div>`;
+
+  if (hasAccounts) {
+    document.getElementById('login-pin')?.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+    // Focus PIN field
+    setTimeout(() => document.getElementById('login-pin')?.focus(), 100);
+  }
+}
+
+async function handleLogin() {
+  const username = document.getElementById('login-user')?.value;
+  const pin = document.getElementById('login-pin')?.value;
+  const err = document.getElementById('login-err');
+  if (!username) { err.textContent = 'Select an account'; return; }
+  if (!pin) { err.textContent = 'Enter your PIN'; return; }
+  err.textContent = 'Decrypting...';
+  const key = await CRYPTO.verify(username, pin);
+  if (!key) { err.textContent = 'Incorrect PIN for ' + username; document.getElementById('login-pin').value = ''; return; }
+  _cryptoKey = key;
+  _activeUser = username;
+  resetAutoLock();
+  state.view = 'list';
+  render();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: CREATE ACCOUNT
+   ════════════════════════════════════════════════════════════════════ */
+function renderCreate(app) {
+  app.innerHTML = `
+    <div style="max-width:420px;margin:50px auto 0">
+      <button class="back-link" onclick="state.view='login';render()">← Back to Login</button>
+      <div class="text-center" style="margin-bottom:24px">
+        <div style="font-size:36px;margin-bottom:12px">👤</div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:6px">Create Account</div>
+        <div style="font-size:13px;color:var(--dim);line-height:1.6">
+          Each account gets its own encrypted patient database.<br>
+          Your PIN encrypts all data — choose something memorable.
+        </div>
+      </div>
+      <div class="card" style="text-align:left">
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Username *</label>
+          <input class="input" id="reg-user" placeholder="e.g. Dr. Smith" autofocus>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">PIN (6+ characters) *</label>
+          <input class="input" id="reg-pin" type="password" placeholder="Choose a PIN">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Confirm PIN *</label>
+          <input class="input" id="reg-pin2" type="password" placeholder="Confirm your PIN">
+        </div>
+        <div id="reg-err" style="font-size:12px;color:var(--danger);margin-bottom:10px;min-height:18px"></div>
+        <button class="btn" style="width:100%" onclick="handleCreate()">Create Account & Log In</button>
+      </div>
+      <div style="margin-top:20px;font-size:11px;color:var(--faint);line-height:1.6;text-align:center">
+        ⚠️ If you forget your PIN, your data cannot be recovered.<br>
+        This is by design — only you can access your patient records.
+      </div>
+    </div>`;
+  document.getElementById('reg-pin2')?.addEventListener('keydown', e => { if (e.key === 'Enter') handleCreate(); });
+}
+
+async function handleCreate() {
+  const username = document.getElementById('reg-user')?.value.trim();
+  const pin = document.getElementById('reg-pin')?.value;
+  const pin2 = document.getElementById('reg-pin2')?.value;
+  const err = document.getElementById('reg-err');
+  if (!username || username.length < 2) { err.textContent = 'Username must be at least 2 characters'; return; }
+  if (ACCOUNTS.exists(username)) { err.textContent = 'Username "' + username + '" already exists'; return; }
+  if (pin.length < 6) { err.textContent = 'PIN must be at least 6 characters'; return; }
+  if (pin !== pin2) { err.textContent = 'PINs do not match'; return; }
+  err.textContent = 'Creating account...';
+  // Generate unique salt for this account
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const saltB64 = btoa(String.fromCharCode(...salt));
+  ACCOUNTS.add(username, saltB64);
+  _cryptoKey = await CRYPTO.createVerifier(username, pin);
+  _activeUser = username;
+  resetAutoLock();
+  state.view = 'list';
+  render();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   LOCK / LOGOUT
+   ════════════════════════════════════════════════════════════════════ */
+function lockApp() {
+  _cryptoKey = null;
+  _activeUser = null;
+  clearTimeout(_autoLockTimer);
+  state.view = 'login';
+  state.activeId = null;
+  state.session = null;
+  destroyCharts();
+  render();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: PRIVACY & DATA MANAGEMENT
+   ════════════════════════════════════════════════════════════════════ */
+function renderPrivacy(app) {
+  app.innerHTML = `
+    <button class="back-link" onclick="navigate('list')">← Back</button>
+    <div style="font-size:20px;font-weight:800;margin-bottom:20px">Privacy & Data Management</div>
+
+    <div class="card" style="border-left:3px solid var(--success)">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">🔒 How Your Data Is Protected</div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.8">
+        <p>• All patient data is <strong style="color:var(--text)">encrypted with AES-256-GCM</strong> before being stored</p>
+        <p>• Your encryption key is derived from your username + PIN using PBKDF2 (100,000 iterations)</p>
+        <p>• Each account has its own <strong style="color:var(--text)">isolated, separately encrypted</strong> patient database</p>
+        <p>• Data is stored <strong style="color:var(--text)">only on this device</strong> in the browser's localStorage</p>
+        <p>• <strong style="color:var(--text)">No data is ever sent to a server</strong> — NeuroTrack runs entirely offline</p>
+        <p>• The app auto-locks after 5 minutes of inactivity</p>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">📤 Export Data (Subject Access Request)</div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:14px">
+        Under UK GDPR Article 15, export all patient records for this account as a JSON file.
+      </div>
+      <button class="btn btn-sm" onclick="exportAllData()">Export All Patient Data</button>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--danger)">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">🗑️ Delete My Account (Right to Erasure)</div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:14px">
+        Permanently deletes your account (<strong style="color:var(--text)">${_activeUser||''}</strong>), all patient records, and encryption keys. <strong style="color:var(--danger)">Cannot be undone.</strong>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="showPurgeModal()">Delete My Account & All Data</button>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--warning)">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">📋 Data Processing Basis</div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.8">
+        <p><strong style="color:var(--text)">Data Controller:</strong> The clinician operating this device (${_activeUser||'current user'})</p>
+        <p><strong style="color:var(--text)">Lawful Basis:</strong> Explicit consent (obtained per patient)</p>
+        <p><strong style="color:var(--text)">Special Category Data:</strong> Health data — Article 9(2)(a) explicit consent</p>
+        <p><strong style="color:var(--text)">Data Stored:</strong> Name, age, clinical notes, cognitive test scores, dates</p>
+        <p><strong style="color:var(--text)">Retention:</strong> Until manually deleted by clinician</p>
+        <p><strong style="color:var(--text)">Third-Party Sharing:</strong> None — data never leaves this device</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">🔑 Security Actions</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-sm btn-ghost" onclick="lockApp()">Log Out</button>
+        <button class="btn btn-sm btn-ghost" onclick="showResetPinModal()">Change PIN</button>
+      </div>
+    </div>`;
+}
+
+function showPurgeModal() {
+  const ov = document.createElement('div'); ov.className='modal-overlay'; ov.onclick=()=>ov.remove();
+  ov.innerHTML=`<div class="modal-box card text-center" onclick="event.stopPropagation()">
+    <div style="font-size:28px;margin-bottom:12px">🗑️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--danger)">Delete Account "${_activeUser||''}"?</div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:12px;line-height:1.6">This permanently deletes your account, every patient, and every session.</div>
+    <div style="margin-bottom:16px"><input class="input" id="purge-confirm" placeholder='Type "DELETE" to confirm' style="text-align:center"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" onclick="handlePurge(this)">Delete Everything</button>
+    </div></div>`;
+  document.body.appendChild(ov);
+}
+function handlePurge(btn){
+  if(document.getElementById('purge-confirm')?.value!=='DELETE'){document.getElementById('purge-confirm').style.borderColor='var(--danger)';return;}
+  DB.purgeCurrentUser();_cryptoKey=null;_activeUser=null;btn.closest('.modal-overlay').remove();state.view='login';state.activeId=null;render();
+}
+function showResetPinModal(){
+  const ov=document.createElement('div');ov.className='modal-overlay';ov.onclick=()=>ov.remove();
+  ov.innerHTML=`<div class="modal-box card" onclick="event.stopPropagation()">
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center">Change PIN for ${_activeUser||''}</div>
+    <div style="margin-bottom:12px"><label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">New PIN (6+)</label><input class="input" id="newpin" type="password" placeholder="New PIN"></div>
+    <div style="margin-bottom:12px"><label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Confirm</label><input class="input" id="newpin2" type="password" placeholder="Confirm"></div>
+    <div id="pin-err" style="font-size:12px;color:var(--danger);margin-bottom:10px;min-height:18px"></div>
+    <div style="display:flex;gap:10px"><button class="btn btn-ghost" style="flex:1" onclick="this.closest('.modal-overlay').remove()">Cancel</button><button class="btn" style="flex:1" onclick="handlePinChange(this)">Update</button></div></div>`;
+  document.body.appendChild(ov);
+}
+async function handlePinChange(btn){
+  const pin=document.getElementById('newpin').value,pin2=document.getElementById('newpin2').value,err=document.getElementById('pin-err');
+  if(pin.length<6){err.textContent='PIN must be at least 6 characters';return;}
+  if(pin!==pin2){err.textContent='PINs do not match';return;}
+  err.textContent='Re-encrypting all data...';
+  const patients=await DB.getAllPatients();
+  // Update verifier with new PIN (salt stays the same)
+  _cryptoKey=await CRYPTO.createVerifier(_activeUser,pin);
+  // Re-encrypt all data with new key
+  const idx={};for(const[id,p]of Object.entries(patients)){await DB.savePatient(id,p);idx[id]=true;}
+  await DB.saveIndex(idx);btn.closest('.modal-overlay').remove();render();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: PATIENT LIST
+   ════════════════════════════════════════════════════════════════════ */
+function renderList(app, patients) {
+  const list = Object.values(patients).sort((a,b) => {
+    const al=a.sessions.length?a.sessions[a.sessions.length-1].date:'';
+    const bl=b.sessions.length?b.sessions[b.sessions.length-1].date:'';
+    return bl.localeCompare(al);
+  });
+
+  let html = `
+    <div class="flex-between mb-20" style="flex-wrap:wrap;gap:12px">
+      <div><div style="font-size:20px;font-weight:800">Patients</div><div style="font-size:12px;color:var(--dim);margin-top:2px">Logged in as <strong style="color:var(--text)">${_activeUser||''}</strong></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="lockApp()" title="Log out">🔒 Log Out</button>
+        <button class="btn btn-ghost btn-sm" onclick="navigate('privacy')" title="Privacy settings">🛡️ Privacy</button>
+        <button class="btn" onclick="navigate('new')">+ New Patient</button>
+      </div>
+    </div>`;
+
+  if (list.length === 0) {
+    html += `<div class="card text-center" style="padding:48px">
+      <div style="font-size:48px;margin-bottom:16px;opacity:0.4">🧠</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:6px">No patients yet</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.6">Add your first patient to begin longitudinal<br>cognitive assessment and tracking.</div>
+      <button class="btn" onclick="navigate('new')">+ Add First Patient</button>
+    </div>`;
+  } else {
+    for (const p of list) {
+      const n = p.sessions.length;
+      const last = n > 0 ? p.sessions[n-1] : null;
+      const risk = n >= 2 ? assessRisk(p.sessions) : 'insufficient';
+      html += `<div class="patient-row" onclick="navigate('detail','${p.id}')">
+        <div class="patient-avatar">${p.name.charAt(0).toUpperCase()}</div>
+        <div class="patient-info">
+          <div class="patient-name">${p.name}</div>
+          <div class="patient-meta">${n} session${n!==1?'s':''}${last?' · Last: '+last.date:''}${p.age?' · Age '+p.age:''}</div>
+        </div>
+        ${last ? `<div class="patient-score"><div class="patient-score-num">${last.composite}</div>${badge(risk)}</div>` : '<span style="font-size:11px;color:var(--faint)">NEW</span>'}
+      </div>`;
+    }
+  }
+  app.innerHTML = html;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: NEW PATIENT
+   ════════════════════════════════════════════════════════════════════ */
+function renderNew(app) {
+  app.innerHTML = `
+    <button class="back-link" onclick="navigate('list')">← Back</button>
+    <div class="card" style="max-width:420px;margin:0 auto">
+      <div style="font-size:18px;font-weight:700;margin-bottom:20px">New Patient</div>
+      <div style="display:grid;gap:14px">
+        <div><label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Full Name *</label><input class="input" id="f-name" placeholder="e.g. Margaret Thompson" autofocus></div>
+        <div><label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Age</label><input class="input" id="f-age" type="number" placeholder="e.g. 72"></div>
+        <div><label style="font-size:12px;color:var(--dim);display:block;margin-bottom:5px">Notes</label><input class="input" id="f-notes" placeholder="e.g. Family history of AD"></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px">
+          <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">
+            <input type="checkbox" id="f-consent" style="margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0">
+            <span style="font-size:12px;color:var(--dim);line-height:1.6">
+              I confirm that the patient (or their legal representative) has given <strong style="color:var(--text)">explicit consent</strong> for their cognitive assessment data to be recorded and stored locally on this device, in accordance with UK GDPR Article 9(2)(a). The patient has been informed that their data is encrypted and never leaves this device.
+            </span>
+          </label>
+        </div>
+        <div id="f-err" style="font-size:12px;color:var(--danger);min-height:16px"></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn" style="flex:1" onclick="createPatient()">Create Patient</button>
+          <button class="btn btn-ghost" onclick="navigate('list')">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('f-name').addEventListener('keydown', e => { if (e.key === 'Enter') createPatient(); });
+}
+
+async function createPatient() {
+  const name = document.getElementById('f-name').value.trim();
+  const consent = document.getElementById('f-consent').checked;
+  const err = document.getElementById('f-err');
+  if (!name) { err.textContent = 'Patient name is required'; return; }
+  if (!consent) { err.textContent = 'Consent must be obtained before recording data'; return; }
+  const age = document.getElementById('f-age').value;
+  const notes = document.getElementById('f-notes').value.trim();
+  const id = genId();
+  await DB.save(id, { id, name, age: age ? parseInt(age) : null, notes, sessions: [], createdAt: new Date().toISOString(), consentDate: new Date().toISOString() });
+  navigate('detail', id);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: PATIENT DETAIL / DASHBOARD
+   ════════════════════════════════════════════════════════════════════ */
+async function renderDetail(app, patient) {
+  if (!patient) { navigate('list'); return; }
+  const h = patient.sessions || [];
+  const latest = h.length > 0 ? h[h.length-1] : null;
+  const risk = h.length >= 2 ? assessRisk(h) : 'insufficient';
+  const slopes = h.length >= 2 ? getDomainSlopes(h) : null;
+  const prev = h.length >= 2 ? h[h.length-2] : null;
+  const delta = latest && prev ? (latest.composite - prev.composite) : null;
+  const preds = h.length >= 2 ? predictFuture(h, 6) : [];
+
+  let html = `
+    <div class="flex-between mb-24" style="flex-wrap:wrap;gap:12px;align-items:flex-start">
+      <div>
+        <button class="back-link" onclick="navigate('list')">← All Patients</button>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px">${patient.name}</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:2px">${patient.age?'Age '+patient.age:''}${patient.age&&patient.notes?' · ':''}${patient.notes||''}</div>
+        <div style="font-size:11px;color:var(--faint);margin-top:4px">${h.length} session${h.length!==1?'s':''} · ID: ${patient.id.slice(0,8)}${patient.consentDate?' · Consent: '+patient.consentDate.slice(0,10):''}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        ${badge(risk)}
+        <button class="btn btn-sm" onclick="navigate('session','${patient.id}')">+ New Session</button>
+        <button class="btn btn-sm btn-ghost" onclick="exportPatientData('${patient.id}')" title="Export this patient's data">📤</button>
+        <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${patient.id}','${patient.name}',${h.length})">Delete</button>
+      </div>
+    </div>`;
+
+  if (h.length === 0) {
+    html += `<div class="card text-center" style="padding:48px">
+      <div style="font-size:40px;margin-bottom:12px;opacity:0.5">📋</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:6px">No sessions yet</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:20px">Run the first assessment to start tracking.</div>
+      <button class="btn" onclick="navigate('session','${patient.id}')">Start First Session</button>
+    </div>`;
+  } else {
+    // Score cards
+    html += `<div class="grid-auto mb-12">
+      <div class="card card-accent text-center">
+        <div style="font-size:11px;color:var(--purple);margin-bottom:4px;font-weight:600;letter-spacing:1px">COMPOSITE</div>
+        <div style="font-size:36px;font-weight:900;color:var(--purple);line-height:1">${latest.composite}</div>
+        ${delta!==null?`<div style="font-size:12px;font-weight:700;margin-top:4px;color:${delta>0?'var(--success)':delta<0?'var(--danger)':'var(--dim)'}">${delta>0?'+':''}${delta.toFixed(1)} from last</div>`:''}
+      </div>`;
+    const cardClassMap = {memory:'card-memory',reaction:'card-reaction',delayedRecall:'card-recall',executive:'card-executive',trails:'card-trails',gonogo:'card-gonogo',digitSymbol:'card-digitsymbol',fluency:'card-fluency'};
+    for (const [k, d] of Object.entries(DOMAIN)) {
+      if (k === 'composite') continue;
+      html += `<div class="card ${cardClassMap[k]||''} text-center">
+        <div style="font-size:11px;color:${d.color};margin-bottom:4px;font-weight:600;letter-spacing:0.5px">${d.icon} ${d.label.split(' ')[0]}</div>
+        <div style="font-size:24px;font-weight:700">${latest[k]!=null?latest[k].toFixed(1):'—'}</div>
+        ${slopes?`<div style="font-size:11px;margin-top:3px;color:${slopes[k].slope>0.5?'var(--success)':slopes[k].slope<-0.5?'var(--danger)':'var(--dim)'}">${slopes[k].slope>0?'↑':'↓'} ${Math.abs(slopes[k].slope).toFixed(2)}/ses</div>`:''}
+      </div>`;
+    }
+    html += `</div>`;
+
+    // Trajectory chart
+    html += `<div class="card mb-12"><div class="section-title">Cognitive Trajectory</div><div class="chart-wrap"><canvas id="chart-traj"></canvas></div></div>`;
+
+    // Prediction chart
+    if (preds.length > 0) {
+      html += `<div class="card mb-12"><div class="section-title">6-Month Forecast</div><div class="chart-wrap chart-wrap-sm"><canvas id="chart-pred"></canvas></div></div>`;
+    }
+
+    // Slope table
+    if (slopes) {
+      html += `<div class="card mb-12"><div class="section-title">Domain Rate of Change</div>`;
+      for (const [d, reg] of Object.entries(slopes)) {
+        const dir = reg.slope>0.5?'↑':reg.slope<-0.5?'↓':'→';
+        const c = reg.slope>0.5?'var(--success)':reg.slope<-0.5?'var(--danger)':'var(--dim)';
+        html += `<div class="slope-row" style="border-left-color:${DOMAIN[d].color}">
+          <div class="slope-dot" style="background:${DOMAIN[d].color}"></div>
+          <div style="flex:1;font-size:13px">${DOMAIN[d].label}</div>
+          <div style="font-size:14px;font-weight:700;color:${c}">${dir} ${Math.abs(reg.slope).toFixed(2)}/ses</div>
+          <div style="font-size:11px;color:var(--faint);width:55px;text-align:right">R²=${reg.r2.toFixed(2)}</div>
+        </div>`;
+      }
+      html += `</div>`;
+    }
+
+    // Session log
+    html += `<div class="card mb-12"><div class="section-title">Session Log</div><div style="max-height:220px;overflow-y:auto">`;
+    for (let i = h.length-1; i >= 0; i--) {
+      const s = h[i];
+      const p2 = i > 0 ? h[i-1] : null;
+      const d2 = p2 ? s.composite - p2.composite : 0;
+      html += `<div class="log-row">
+        <div style="font-size:12px;color:var(--accent);font-weight:700;width:28px">S${s.session}</div>
+        <div style="font-size:12px;color:var(--dim);flex:1">${s.date}${s.time?' · '+s.time:''}</div>
+        <div style="font-size:16px;font-weight:700">${s.composite}</div>
+        ${p2?`<div style="font-size:12px;font-weight:600;width:45px;text-align:right;color:${d2>0?'var(--success)':d2<0?'var(--danger)':'var(--dim)'}">${d2>0?'+':''}${d2.toFixed(1)}</div>`:''}
+      </div>`;
+    }
+    html += `</div></div>`;
+
+    // Clinical summary
+    if (h.length >= 3) {
+      const ri = RISK_INFO[risk];
+      const worst = slopes ? Object.entries(slopes).sort((a,b)=>a[1].slope-b[1].slope)[0] : null;
+      const best = slopes ? Object.entries(slopes).sort((a,b)=>b[1].slope-a[1].slope)[0] : null;
+      const p6 = preds.length > 0 ? preds[preds.length-1] : null;
+      html += `<div class="card" style="background:rgba(251,191,36,0.03);border-color:rgba(251,191,36,0.1)">
+        <div style="font-size:13px;font-weight:700;color:var(--warning);margin-bottom:10px">Clinical Summary</div>
+        <div style="font-size:12px;color:var(--dim);line-height:1.8">
+          <p>Over <strong style="color:var(--text)">${h.length} sessions</strong>, trajectory assessed as <strong style="color:${ri.color}">${ri.label.toLowerCase()}</strong>.
+          ${worst?` Domain of most concern: <strong style="color:${DOMAIN[worst[0]]?.color}">${DOMAIN[worst[0]]?.label}</strong> (slope: ${worst[1].slope.toFixed(2)}/ses).`:''}
+          ${best?` Strongest: <strong style="color:${DOMAIN[best[0]]?.color}">${DOMAIN[best[0]]?.label}</strong> (${best[1].slope.toFixed(2)}/ses).`:''}
+          </p>
+          ${p6?`<p style="margin-top:6px">6-month projected composite: <strong style="color:var(--text)">${p6.predicted}</strong> (range: ${p6.lower}–${p6.upper}). ${risk==='significant'||risk==='moderate'?'Consider referral for neuropsychological evaluation.':risk==='mild'?'Continue monitoring, consider increasing frequency.':'No immediate clinical concern.'}</p>`:''}
+          <p style="margin-top:8px;font-size:10px;font-style:italic;opacity:0.5">This tool supports clinical decision-making and is not a diagnostic instrument.</p>
+        </div>
+      </div>`;
+    }
+  }
+
+  app.innerHTML = html;
+
+  // Render charts after DOM is ready
+  if (h.length > 0) setTimeout(() => {
+    renderTrajectoryChart(h);
+    if (preds.length > 0) renderPredictionChart(h, preds);
+  }, 50);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   CHARTS (Chart.js)
+   ════════════════════════════════════════════════════════════════════ */
+function renderTrajectoryChart(history) {
+  const ctx = document.getElementById('chart-traj');
+  if (!ctx) return;
+  const labels = history.map(h => 'S'+h.session);
+  const datasets = [];
+  const cs = getComputedStyle(document.documentElement);
+  const gridC = cs.getPropertyValue('--chart-grid').trim();
+  const borderC = cs.getPropertyValue('--chart-border').trim();
+  const labelC = cs.getPropertyValue('--chart-label').trim();
+  for (const [k, d] of Object.entries(DOMAIN)) {
+    if (k === 'composite') continue;
+    datasets.push({ label: d.label, data: history.map(h => h[k]), borderColor: d.color, backgroundColor: d.color+'20', borderWidth: 1.5, pointRadius: 3, tension: 0.3 });
+  }
+  const purpleC = cs.getPropertyValue('--purple').trim();
+  datasets.push({ label: 'Composite', data: history.map(h => h.composite), borderColor: purpleC, backgroundColor: purpleC+'20', borderWidth: 3, pointRadius: 4, borderDash: [8,4], tension: 0.3 });
+
+  state.charts.traj = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: labelC, font: { size: 11, family: 'Manrope' }, usePointStyle: true, pointStyle: 'circle', padding: 16 } } },
+      scales: {
+        y: { min: 0, max: 100, ticks: { color: labelC, font: { size: 11 } }, grid: { color: gridC }, border: { color: borderC } },
+        x: { ticks: { color: labelC, font: { size: 11 } }, grid: { color: gridC }, border: { color: borderC } }
+      }
+    }
+  });
+}
+
+function renderPredictionChart(history, preds) {
+  const ctx = document.getElementById('chart-pred');
+  if (!ctx) return;
+  const cs = getComputedStyle(document.documentElement);
+  const gridC = cs.getPropertyValue('--chart-grid').trim();
+  const borderC = cs.getPropertyValue('--chart-border').trim();
+  const labelC = cs.getPropertyValue('--chart-label').trim();
+  const purpleC = cs.getPropertyValue('--purple').trim();
+  const last = history[history.length-1];
+  const labels = ['S'+last.session, ...preds.map(p => '+'+p.month+'m')];
+  const actual = [last.composite, ...preds.map(() => null)];
+  const predicted = [last.composite, ...preds.map(p => p.predicted)];
+  const upper = [last.composite, ...preds.map(p => p.upper)];
+  const lower = [last.composite, ...preds.map(p => p.lower)];
+
+  state.charts.pred = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Upper CI', data: upper, borderColor: 'transparent', backgroundColor: purpleC+'18', fill: '+1', pointRadius: 0 },
+        { label: 'Lower CI', data: lower, borderColor: 'transparent', backgroundColor: 'transparent', fill: false, pointRadius: 0 },
+        { label: 'Predicted', data: predicted, borderColor: purpleC, borderWidth: 2, borderDash: [8,4], pointRadius: 3, tension: 0.3, backgroundColor: 'transparent' },
+        { label: 'Actual', data: actual, borderColor: purpleC, borderWidth: 3, pointRadius: 5, backgroundColor: purpleC+'20' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 0, max: 100, ticks: { color: labelC, font: { size: 11 } }, grid: { color: gridC }, border: { color: borderC } },
+        x: { ticks: { color: labelC, font: { size: 11 } }, grid: { color: gridC }, border: { color: borderC } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   DELETE MODAL
+   ════════════════════════════════════════════════════════════════════ */
+function showDeleteModal(id, name, count) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = () => overlay.remove();
+  overlay.innerHTML = `<div class="modal-box card text-center" onclick="event.stopPropagation()">
+    <div style="font-size:28px;margin-bottom:12px">⚠️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px">Delete Patient?</div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.6">This will permanently delete <strong style="color:var(--text)">${name}</strong> and all ${count} session${count!==1?'s':''}.</div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" onclick="DB.remove('${id}').then(()=>{this.closest('.modal-overlay').remove();navigate('list');})">Delete</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   VIEW: SESSION (GAME RUNNER)
+   ════════════════════════════════════════════════════════════════════ */
+const TASKS = [
+  { id:'memory', name:'Pattern Memory', icon:'🧠' },
+  { id:'reaction', name:'Speed Test', icon:'⚡' },
+  { id:'delayedRecall', name:'Word Recall', icon:'📝' },
+  { id:'executive', name:'Stroop Challenge', icon:'🎨' },
+  { id:'trails', name:'Trail Making', icon:'🔗' },
+  { id:'gonogo', name:'Go / No-Go', icon:'🎯' },
+  { id:'digitSymbol', name:'Symbol Match', icon:'🔢' },
+  { id:'fluency', name:'Category Fluency', icon:'💬' },
+];
+
+function renderSession(app, patient) {
+  if (!patient) { navigate('list'); return; }
+  if (!state.session) {
+    state.session = { taskIdx: -1, scores: {}, gameState: null };
+  }
+  const ss = state.session;
+  const sesNum = patient.sessions.length + 1;
+
+  let html = `<button class="back-link" onclick="navigate('detail','${patient.id}')">← Cancel Session</button>
+    <div class="text-center mb-16"><div style="font-size:12px;color:var(--dim);letter-spacing:2px">SESSION ${sesNum} · ${patient.name.toUpperCase()}</div></div>`;
+
+  // Task dots
+  html += `<div class="task-dots">`;
+  for (let i = 0; i < TASKS.length; i++) {
+    const w = i === ss.taskIdx ? 28 : 10;
+    const bg = i < ss.taskIdx ? DOMAIN[TASKS[i].id].color : i === ss.taskIdx ? 'var(--accent)' : 'rgba(255,255,255,0.06)';
+    const shadow = i === ss.taskIdx ? '0 0 12px var(--accent-glow)' : 'none';
+    html += `<div class="task-dot" style="width:${w}px;background:${bg};box-shadow:${shadow}"></div>`;
+  }
+  html += `</div>`;
+
+  html += `<div class="card" style="max-width:400px;margin:0 auto" id="game-area"></div>`;
+  app.innerHTML = html;
+
+  if (ss.taskIdx < 0) renderGameIntro(patient);
+  else if (ss.taskIdx < TASKS.length) startGame(TASKS[ss.taskIdx].id, patient);
+  else renderSessionResults(patient);
+}
+
+function renderGameIntro(patient) {
+  const area = document.getElementById('game-area');
+  if (!area) return;
+  const sesNum = patient.sessions.length + 1;
+  area.innerHTML = `<div class="text-center">
+    <div style="font-size:13px;color:var(--dim);letter-spacing:2px;margin-bottom:6px">SESSION ${sesNum}</div>
+    <div style="font-size:20px;font-weight:700;margin-bottom:6px">Cognitive Assessment Battery</div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:20px">8 tasks · ~10 minutes</div>
+    ${TASKS.map((t,i) => `<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:rgba(79,140,255,0.04);border:1px solid rgba(79,140,255,0.1);margin-bottom:8px;text-align:left">
+      <div style="font-size:24px">${t.icon}</div>
+      <div><div style="font-size:14px;font-weight:600">${t.name}</div></div>
+      <div style="margin-left:auto;font-size:11px;color:var(--faint)">#${i+1}</div>
+    </div>`).join('')}
+    <button class="btn mt-16" onclick="state.session.taskIdx=0;navigate('session','${patient.id}')">Begin Assessment</button>
+  </div>`;
+}
+
+function renderSessionResults(patient) {
+  const area = document.getElementById('game-area');
+  if (!area) return;
+  const ss = state.session;
+  const comp = computeComposite(ss.scores);
+  area.innerHTML = `<div class="text-center">
+    <div style="font-size:40px;margin-bottom:12px">✨</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">Session Complete!</div>
+    <div style="font-size:12px;color:var(--dim);margin-bottom:20px">Saving to database...</div>
+    <div style="font-size:48px;font-weight:900;color:var(--accent);margin-bottom:16px">${comp}</div>
+    <div class="grid-2">
+      ${TASKS.map(t => `<div class="score-mini"><div class="score-mini-label" style="color:${DOMAIN[t.id].color}">${t.icon} ${t.name}</div><div class="score-mini-val">${ss.scores[t.id]!=null?ss.scores[t.id].toFixed(1):'—'}</div></div>`).join('')}
+    </div>
+  </div>`;
+
+  // Save (async — encrypted)
+  const result = { ...ss.scores, composite: comp, date: new Date().toISOString().slice(0,10), time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), session: patient.sessions.length+1 };
+  const updated = { ...patient, sessions: [...patient.sessions, result] };
+  DB.save(patient.id, updated).then(() => {
+    setTimeout(() => navigate('detail', patient.id), 2800);
+  });
+}
+
+/* Game routing handled by unified taskComplete in self-test module */
+
+/* ════════════════════════════════════════════════════════════════════
+   GAME ENGINES
+   ════════════════════════════════════════════════════════════════════ */
+function startGame(taskId, patient) {
+  switch (taskId) {
+    case 'memory': gameMemory(); break;
+    case 'reaction': gameReaction(); break;
+    case 'delayedRecall': gameRecall(); break;
+    case 'executive': gameStroop(); break;
+    case 'trails': gameTrails(); break;
+    case 'gonogo': gameGoNogo(); break;
+    case 'digitSymbol': gameDigitSymbol(); break;
+    case 'fluency': gameFluency(); break;
+  }
+}
+
+// ── PATTERN MEMORY ──
+function gameMemory() {
+  const area = document.getElementById('game-area');
+  let phase='ready',seq=[],input=[],span=3,round=0,score=0,maxR=6,activeCell=-1,tmr=null;
+
+  function genSeq(len){const s=[];while(s.length<len){const n=Math.floor(Math.random()*9);if(s[s.length-1]!==n)s.push(n);}return s;}
+
+  function draw() {
+    let fb = '';
+    if (phase==='showing') fb='<div style="color:var(--warning)">Memorise the pattern...</div>';
+    else if (phase==='input') fb=`<div style="color:var(--dim)">Tap ${seq.length-input.length} more</div>`;
+
+    area.innerHTML = `<div class="text-center">
+      <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">ROUND ${Math.min(round+1,maxR)}/${maxR}</span><span style="font-size:12px;color:var(--accent);font-weight:600">SPAN: ${span}</span></div>
+      ${progress(round,maxR)}
+      ${phase==='ready'?`<div style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">🧠</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Pattern Memory</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6">Watch the cells light up, then tap them<br>in the same order.</div><button class="btn" id="mem-start">Start Game</button></div>`
+      :`<div class="game-grid" id="mem-grid">${Array.from({length:9}).map((_,i)=>`<button class="game-cell${activeCell===i?' active':''}${phase==='showing'&&activeCell!==i?' dim':''}" data-idx="${i}"></button>`).join('')}</div><div style="margin-top:20px;font-size:14px;font-weight:500;height:22px">${fb}</div>`}
+    </div>`;
+
+    if (phase==='ready') document.getElementById('mem-start')?.addEventListener('click', startRound);
+    if (phase==='input') {
+      document.querySelectorAll('.game-cell').forEach(el => {
+        el.addEventListener('click', () => handleTap(parseInt(el.dataset.idx)));
+      });
+    }
+  }
+
+  function startRound() {
+    seq=genSeq(span);input=[];phase='blank';activeCell=-1;
+    // Show all cells blank with "Get ready..." message
+    area.innerHTML = `<div class="text-center">
+      <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">ROUND ${Math.min(round+1,maxR)}/${maxR}</span><span style="font-size:12px;color:var(--accent);font-weight:600">SPAN: ${span}</span></div>
+      ${progress(round,maxR)}
+      <div class="game-grid">${Array.from({length:9}).map(()=>`<button class="game-cell" disabled></button>`).join('')}</div>
+      <div style="margin-top:20px;font-size:14px;font-weight:500;height:22px;color:var(--dim)">Get ready...</div>
+    </div>`;
+    // Brief blank pause, then start showing the sequence
+    tmr=setTimeout(()=>{
+      phase='showing';
+      let i=0;
+      function show(){
+        if(i<seq.length){activeCell=seq[i];draw();tmr=setTimeout(()=>{activeCell=-1;draw();i++;tmr=setTimeout(show,250);},550);}
+        else{phase='input';draw();}
+      }
+      show();
+    },800);
+  }
+
+  function handleTap(idx) {
+    if(phase!=='input')return;
+    input.push(idx);activeCell=idx;draw();setTimeout(()=>{activeCell=-1;
+      if(input.length===seq.length){
+        const ok=input.every((v,i)=>v===seq[i]);
+        const pts=ok?Math.min(100,40+span*10):Math.max(10,25-(span-3)*3);
+        score+=pts;round++;
+        if(ok&&span<8)span++;if(!ok&&span>3)span--;
+        if(round>=maxR){taskComplete('memory',Math.min(100,Math.max(0,Math.round(score/maxR))));}
+        else setTimeout(startRound,800);
+      } else draw();
+    },180);
+  }
+
+  draw();
+}
+
+// ── REACTION SPEED ──
+function gameReaction() {
+  const area = document.getElementById('game-area');
+  let phase='ready',times=[],startT=0,lastRT=null,round=0,maxR=10,tmr=null;
+
+  function draw() {
+    const avg=times.length>0?Math.round(times.reduce((a,b)=>a+b,0)/times.length):null;
+    const bgMap={ready:'var(--surface)',wait:'rgba(248,113,113,0.04)',go:'rgba(52,211,153,0.1)',early:'rgba(251,191,36,0.06)',result:'var(--surface)'};
+
+    area.innerHTML = `<div class="text-center">
+      <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">TRIAL ${Math.min(round+1,maxR)}/${maxR}</span>${avg?`<span style="font-size:12px;color:var(--accent);font-weight:600">AVG: ${avg}ms</span>`:''}</div>
+      ${progress(round,maxR,'var(--warning)')}
+      <div class="react-box mt-16" id="react-box" style="background:${bgMap[phase]||'var(--surface)'}">
+        ${phase==='ready'?`<div style="font-size:40px">⚡</div><div style="font-size:16px;font-weight:600">Processing Speed</div><div style="font-size:13px;color:var(--dim);margin-top:4px">Tap when the screen turns green.</div><div style="margin-top:14px"><span class="btn btn-sm">Start</span></div>`
+        :phase==='wait'?`<div style="font-size:40px;opacity:0.6">🔴</div><div style="font-size:15px;color:var(--danger);font-weight:600">Wait for green...</div>`
+        :phase==='go'?`<div style="font-size:40px">🟢</div><div style="font-size:24px;font-weight:800;color:var(--success);letter-spacing:2px">TAP NOW!</div>`
+        :phase==='early'?`<div style="font-size:40px">⚠️</div><div style="font-size:14px;color:var(--warning);font-weight:600">Too early!</div>`
+        :`<div style="font-size:14px;color:var(--dim)">Reaction Time</div><div style="font-size:36px;font-weight:800;color:${lastRT<300?'var(--success)':lastRT<500?'var(--warning)':'var(--danger)'}">${lastRT}ms</div>`}
+      </div>
+      ${times.length>1?`<div style="display:flex;gap:4px;justify-content:center;margin-top:14px;height:30px;align-items:flex-end">${times.map(t=>{const h=Math.max(6,Math.min(30,(600-t)/600*30));const c=t<300?'var(--success)':t<450?'var(--warning)':'var(--danger)';return`<div style="width:8px;height:${h}px;border-radius:2px;background:${c};opacity:0.7"></div>`;}).join('')}</div>`:''}
+    </div>`;
+
+    document.getElementById('react-box')?.addEventListener('click', handleTap);
+  }
+
+  function startTrial() {
+    phase='wait';lastRT=null;draw();
+    const delay=1200+Math.random()*3500;
+    tmr=setTimeout(()=>{phase='go';startT=Date.now();draw();},delay);
+  }
+
+  function handleTap() {
+    if(phase==='ready'){startTrial();return;}
+    if(phase==='wait'){clearTimeout(tmr);phase='early';draw();setTimeout(startTrial,1200);return;}
+    if(phase==='go'){
+      const rt=Date.now()-startT;lastRT=rt;times.push(rt);round++;
+      if(times.length>=maxR){
+        const avg=times.reduce((a,b)=>a+b,0)/times.length;
+        const s=Math.max(0,Math.min(100,100-(avg-180)/4.5));
+        const mean=avg,std=Math.sqrt(times.reduce((a,v)=>a+(v-mean)**2,0)/times.length);
+        const cv=std/mean,pen=Math.min(15,cv*40);
+        phase='result';draw();
+        setTimeout(()=>taskComplete('reaction',Math.round(Math.max(0,s-pen))),700);
+      } else{phase='result';draw();setTimeout(startTrial,1000);}
+    }
+  }
+
+  draw();
+}
+
+// ── DELAYED RECALL ──
+function gameRecall() {
+  const area = document.getElementById('game-area');
+  const pool=["OCEAN","BRIDGE","FOREST","CANDLE","RIVER","GUITAR","PALACE","SUNSET","EAGLE","GARDEN","CRYSTAL","THUNDER","MARBLE","SHADOW","VELVET","LANTERN","ANCHOR","COMPASS","FEATHER","MIRROR","VOLCANO","SILVER","AUTUMN","HARVEST"];
+  const words=[...pool].sort(()=>Math.random()-0.5).slice(0,8);
+  let phase='ready',timer=25,dTimer=15,rTimer=40,revIdx=0,mathPts=0,mathQ=null,intv=null;
+
+  function genMath(){const a=Math.floor(Math.random()*20)+10,b=Math.floor(Math.random()*15)+5,op=Math.random()>0.5?'+':'-';return{a,b,op,answer:op==='+'?a+b:a-b};}
+
+  // Only update timer text and progress bar without rebuilding the whole DOM
+  function updateTimer(id, value, max, color, warnAt) {
+    const timerEl = document.getElementById(id+'-timer');
+    const progEl = document.getElementById(id+'-prog');
+    if (timerEl) {
+      timerEl.textContent = value + 's';
+      timerEl.style.color = (warnAt && value <= warnAt) ? 'var(--danger)' : color;
+    }
+    if (progEl) {
+      progEl.style.width = Math.min(100, ((max - value) / max) * 100) + '%';
+    }
+  }
+
+  function drawPhase() {
+    if(phase==='ready'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">📝</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Delayed Recall</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6">Memorise 8 words → solve maths → recall words.</div><button class="btn" id="recall-start">Start Game</button></div>`;
+      document.getElementById('recall-start')?.addEventListener('click',()=>{phase='memorize';revIdx=0;startMemTimer();});
+    } else if(phase==='memorize'){
+      area.innerHTML=`<div class="text-center">
+        <div class="flex-between mb-12"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">MEMORISE</span><span id="mem-timer" style="font-size:13px;color:var(--accent);font-weight:700">${timer}s</span></div>
+        <div class="progress"><div class="progress-fill" id="mem-prog" style="width:${((25-timer)/25)*100}%;background:var(--success)"></div></div>
+        <div class="flex-wrap mt-16" id="word-grid" style="justify-content:center;max-width:360px;margin:16px auto">
+          ${words.map((w,i)=>`<div class="word-chip" id="wc-${i}" style="background:${i<revIdx?'rgba(52,211,153,0.08)':'transparent'};border:1px solid ${i<revIdx?'rgba(52,211,153,0.2)':'var(--border)'};color:${i<revIdx?'var(--success)':'transparent'};opacity:${i<revIdx?1:0};transform:translateY(${i<revIdx?0:8}px)">${w}</div>`).join('')}
+        </div>
+      </div>`;
+    } else if(phase==='distract'){
+      area.innerHTML=`<div class="text-center">
+        <div class="flex-between mb-12"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">DISTRACTION</span><span id="dist-timer" style="font-size:13px;color:var(--warning);font-weight:700">${dTimer}s</span></div>
+        <div class="progress"><div class="progress-fill" id="dist-prog" style="width:${((15-dTimer)/15)*100}%;background:var(--warning)"></div></div>
+        <div style="padding:20px 0">
+          <div style="font-size:11px;color:var(--dim);margin-bottom:14px">Solve to prevent rehearsal</div>
+          <div style="font-size:28px;font-weight:800;margin-bottom:14px" id="math-question">${mathQ?mathQ.a+' '+mathQ.op+' '+mathQ.b+' = ?':''}</div>
+          <div style="display:flex;gap:8px;max-width:200px;margin:0 auto">
+            <input class="input" type="number" id="math-ans" style="text-align:center;font-size:18px;font-weight:700" autofocus>
+            <button class="btn btn-sm" id="math-go">→</button>
+          </div>
+          <div style="font-size:12px;color:var(--success);margin-top:10px" id="math-score">${mathPts} correct</div>
+        </div>
+      </div>`;
+      document.getElementById('math-go')?.addEventListener('click',checkMath);
+      document.getElementById('math-ans')?.addEventListener('keydown',e=>{if(e.key==='Enter')checkMath();});
+      document.getElementById('math-ans')?.focus();
+    } else if(phase==='recall'){
+      area.innerHTML=`<div class="text-center">
+        <div class="flex-between mb-12"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">RECALL</span><span id="rec-timer" style="font-size:13px;color:var(--accent);font-weight:700">${rTimer}s</span></div>
+        <div class="progress"><div class="progress-fill" id="rec-prog" style="width:0%;background:var(--accent)"></div></div>
+        <div style="font-size:13px;color:var(--dim);margin:12px 0">Type all the words you remember</div>
+        <textarea class="input" id="recall-text" style="height:100px;resize:none;font-size:15px;border-radius:14px" placeholder="Type words separated by spaces..." autofocus></textarea>
+        <div class="mt-12"><button class="btn" id="recall-submit">Submit Recall</button></div>
+      </div>`;
+      document.getElementById('recall-submit')?.addEventListener('click',submitRecall);
+      document.getElementById('recall-text')?.focus();
+    }
+  }
+
+  function revealWord(idx) {
+    const el = document.getElementById('wc-'+idx);
+    if (el) {
+      el.style.background = 'rgba(52,211,153,0.08)';
+      el.style.borderColor = 'rgba(52,211,153,0.2)';
+      el.style.color = 'var(--success)';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }
+  }
+
+  function startMemTimer(){
+    drawPhase();
+    intv=setInterval(()=>{
+      if(phase==='memorize'){
+        if(revIdx<words.length){revealWord(revIdx);revIdx++;}
+        timer--;
+        if(timer<=0){clearInterval(intv);phase='distract';mathQ=genMath();startDistractTimer();}
+        else updateTimer('mem',timer,25,'var(--accent)',5);
+      }
+    },1000);
+  }
+
+  function startDistractTimer(){
+    drawPhase();
+    intv=setInterval(()=>{
+      dTimer--;
+      if(dTimer<=0){clearInterval(intv);phase='recall';startRecallTimer();}
+      else updateTimer('dist',dTimer,15,'var(--warning)',null);
+    },1000);
+  }
+
+  function startRecallTimer(){
+    drawPhase();
+    intv=setInterval(()=>{
+      rTimer--;
+      if(rTimer<=0){clearInterval(intv);submitRecall();}
+      else updateTimer('rec',rTimer,40,'var(--accent)',10);
+    },1000);
+  }
+
+  function checkMath(){
+    const ansEl = document.getElementById('math-ans');
+    const ans=parseInt(ansEl?.value);
+    if(ans===mathQ.answer)mathPts++;
+    mathQ=genMath();
+    // Update only the question and score, not the whole page
+    const qEl = document.getElementById('math-question');
+    const sEl = document.getElementById('math-score');
+    if(qEl) qEl.textContent = mathQ.a+' '+mathQ.op+' '+mathQ.b+' = ?';
+    if(sEl) sEl.textContent = mathPts+' correct';
+    if(ansEl){ansEl.value='';ansEl.focus();}
+  }
+
+  function submitRecall(){
+    clearInterval(intv);
+    const text=(document.getElementById('recall-text')?.value||'').toUpperCase();
+    const recalled=text.split(/[\s,;.\n]+/).filter(Boolean);
+    const uniq=new Set(recalled);
+    const correct=[...uniq].filter(w=>words.includes(w)).length;
+    const intrusions=[...uniq].filter(w=>!words.includes(w)).length;
+    let s=(correct/words.length)*100;s=Math.max(0,s-intrusions*3);
+    const middle=words.slice(2,-2),mr=[...uniq].filter(w=>middle.includes(w)).length;
+    if(middle.length>0)s+=mr/middle.length*8;
+    taskComplete('delayedRecall',Math.round(Math.min(100,Math.max(0,s))));
+  }
+
+  drawPhase();
+}
+
+// ── STROOP ──
+function gameStroop() {
+  const area = document.getElementById('game-area');
+  const colors=['#ef4444','#3b82f6','#22c55e','#eab308'];
+  const names=['RED','BLUE','GREEN','YELLOW'];
+  let phase='ready',trial=null,round=0,score=0,maxR=14,feedback=null,startT=0;
+
+  function genTrial(){const ti=Math.floor(Math.random()*4),con=Math.random()>0.6,ci=con?ti:((ti+1+Math.floor(Math.random()*3))%4);return{text:names[ti],color:colors[ci],idx:ci,con};}
+
+  function draw(){
+    if(phase==='ready'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">🎨</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Stroop Challenge</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6">Tap the <strong style="color:var(--text)">INK colour</strong>, ignore the word.</div><button class="btn" id="stroop-start">Start Game</button></div>`;
+      document.getElementById('stroop-start')?.addEventListener('click',()=>{phase='play';trial=genTrial();startT=Date.now();draw();});
+    } else {
+      area.innerHTML=`<div class="text-center">
+        <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">${round+1}/${maxR}</span><span style="font-size:12px;color:var(--danger);font-weight:600">TAP THE INK COLOUR</span></div>
+        ${progress(round,maxR,'var(--danger)')}
+        ${trial?`<div style="font-size:52px;font-weight:900;color:${trial.color};margin:28px 0 32px;letter-spacing:6px;user-select:none;text-shadow:${feedback===true?'0 0 30px rgba(52,211,153,0.4)':feedback===false?'0 0 30px rgba(248,113,113,0.4)':'none'}">${trial.text}</div>`:''}
+        <div style="display:flex;gap:12px;justify-content:center">
+          ${colors.map((c,i)=>`<button class="stroop-btn" style="background:${c};box-shadow:0 4px 12px ${c}30" data-idx="${i}"></button>`).join('')}
+        </div>
+        <div style="margin-top:14px;font-size:13px;font-weight:600;height:20px;color:${feedback===true?'var(--success)':feedback===false?'var(--danger)':'transparent'}">${feedback===true?'✓ Correct!':feedback===false?'✗ Wrong!':'·'}</div>
+      </div>`;
+      document.querySelectorAll('.stroop-btn').forEach(el=>{
+        el.addEventListener('click',()=>answer(parseInt(el.dataset.idx)));
+      });
+    }
+  }
+
+  function answer(idx){
+    if(!trial||feedback!==null)return;
+    const rt=Date.now()-startT,ok=idx===trial.idx;
+    const bonus=!trial.con&&ok?15:0,pts=ok?Math.max(20,100-rt/8)+bonus:0;
+    score+=pts;feedback=ok;round++;draw();
+    if(round>=maxR){setTimeout(()=>taskComplete('executive',Math.min(100,Math.max(0,Math.round(score/maxR)))),600);}
+    else setTimeout(()=>{trial=genTrial();feedback=null;startT=Date.now();draw();},700);
+  }
+
+  draw();
+}
+
+// ── TRAIL MAKING TEST (A & B) ──
+// Part A: connect numbers in order. Part B: alternate numbers and letters (1-A-2-B...).
+// Measures visual scanning, processing speed, and cognitive flexibility.
+function gameTrails() {
+  const area = document.getElementById('game-area');
+  let phase='ready',part='A',startT=0,clicks=[],errors=0,timeA=0,timeB=0;
+
+  function genNodes(partType) {
+    const nodes=[];const count=partType==='A'?15:14;
+    const positions=[];
+    for(let i=0;i<count;i++){
+      let x,y,ok;
+      do{x=15+Math.random()*70;y=10+Math.random()*75;ok=true;
+        for(const p of positions){if(Math.hypot(p.x-x,p.y-y)<14){ok=false;break;}}
+      }while(!ok);
+      positions.push({x,y});
+      if(partType==='A') nodes.push({label:''+(i+1),x,y});
+      else{const n=Math.floor(i/2)+1;const l=String.fromCharCode(65+Math.floor(i/2));nodes.push({label:i%2===0?''+n:l,x,y});}
+    }
+    return nodes;
+  }
+
+  let nodes=[],current=0;
+
+  function draw(){
+    if(phase==='ready'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">🔗</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Trail Making Test</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6">Part A: Tap numbers in order (1→2→3...)<br>Part B: Alternate numbers & letters (1→A→2→B...)</div><button class="btn" id="trails-start">Start Part A</button></div>`;
+      document.getElementById('trails-start')?.addEventListener('click',()=>{part='A';nodes=genNodes('A');current=0;clicks=[];errors=0;phase='play';startT=Date.now();draw();});
+    } else if(phase==='play'){
+      const elapsed=((Date.now()-startT)/1000).toFixed(1);
+      area.innerHTML=`<div>
+        <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">PART ${part}</span><span style="font-size:13px;color:var(--accent);font-weight:700">${elapsed}s</span></div>
+        <div style="position:relative;width:100%;height:300px;background:var(--surface);border-radius:12px;overflow:hidden" id="trails-field">
+          ${nodes.map((n,i)=>{
+            const done=i<current;const active=i===current;
+            return`<div onclick="trailTap(${i})" style="position:absolute;left:${n.x}%;top:${n.y}%;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;
+              background:${done?'var(--success)':active?'var(--accent)':'var(--card)'};
+              border:2px solid ${done?'var(--success)':active?'var(--accent)':'var(--border)'};
+              color:${done||active?'#fff':'var(--text)'};
+              opacity:${done?0.5:1};
+              ${done?'transform:scale(0.8)':''}
+            ">${n.label}</div>`;
+          }).join('')}
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--dim);text-align:center">Next: <strong style="color:var(--text)">${nodes[current]?.label||'—'}</strong>${errors>0?' · Errors: '+errors:''}</div>
+      </div>`;
+    } else if(phase==='between'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0">
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px">Part A Complete!</div>
+        <div style="font-size:28px;font-weight:800;color:var(--accent);margin-bottom:16px">${(timeA/1000).toFixed(1)}s</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:20px">Now Part B: alternate numbers & letters<br>(1→A→2→B→3→C...)</div>
+        <button class="btn" id="trails-b">Start Part B</button>
+      </div>`;
+      document.getElementById('trails-b')?.addEventListener('click',()=>{part='B';nodes=genNodes('B');current=0;clicks=[];errors=0;phase='play';startT=Date.now();draw();});
+    }
+  }
+
+  window.trailTap=function(idx){
+    if(phase!=='play')return;
+    if(idx===current){current++;
+      if(current>=nodes.length){
+        if(part==='A'){timeA=Date.now()-startT;phase='between';draw();}
+        else{timeB=Date.now()-startT;
+          // Score: TMT B-A measures cognitive flexibility. Lower time = better.
+          const speedA=Math.max(0,100-(timeA/1000-8)*3);
+          const speedB=Math.max(0,100-(timeB/1000-12)*2.5);
+          const flexibility=Math.max(0,100-((timeB-timeA)/1000)*4);
+          const errorPen=errors*5;
+          const score=Math.max(0,Math.min(100,Math.round((speedA*0.3+speedB*0.3+flexibility*0.4)-errorPen)));
+          taskComplete('trails',score);
+        }
+      } else draw();
+    } else{errors++;draw();}
+  };
+
+  draw();
+}
+
+// ── GO / NO-GO (Sustained Attention & Inhibitory Control) ──
+// Green = tap (Go). Red = don't tap (No-Go). Measures sustained attention and impulse control.
+function gameGoNogo() {
+  const area = document.getElementById('game-area');
+  let phase='ready',round=0,maxR=24,goCount=0,nogoCount=0,hits=0,falseAlarms=0,misses=0,correctRejects=0,rts=[],tmr=null,stimT=0,isGo=true,responded=false;
+
+  function draw(){
+    if(phase==='ready'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">🎯</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Go / No-Go</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6"><strong style="color:var(--success)">Green circle</strong> = Tap as fast as you can<br><strong style="color:var(--danger)">Red circle</strong> = Do NOT tap</div><button class="btn" id="gng-start">Start</button></div>`;
+      document.getElementById('gng-start')?.addEventListener('click',()=>{phase='play';nextTrial();});
+    }
+  }
+
+  function nextTrial(){
+    if(round>=maxR){
+      const hitRate=goCount>0?hits/goCount:0;
+      const faRate=nogoCount>0?falseAlarms/nogoCount:0;
+      const avgRT=rts.length>0?rts.reduce((a,b)=>a+b,0)/rts.length:999;
+      const rtScore=Math.max(0,100-(avgRT-250)/4);
+      const accScore=(hitRate-faRate)*100;
+      const score=Math.max(0,Math.min(100,Math.round(rtScore*0.4+accScore*0.6)));
+      taskComplete('gonogo',score);
+      return;
+    }
+    isGo=Math.random()>0.3; // 70% go, 30% no-go
+    if(isGo)goCount++;else nogoCount++;
+    responded=false;round++;
+    const bg=isGo?'rgba(46,232,165,0.15)':'rgba(255,107,107,0.15)';
+    const circleColor=isGo?'var(--success)':'var(--danger)';
+    area.innerHTML=`<div class="text-center">
+      <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim);letter-spacing:1px">${round}/${maxR}</span><span style="font-size:12px;color:var(--dim)">${isGo?'GO':'NO-GO'}</span></div>
+      ${progress(round,maxR,'var(--cyan)')}
+      <div id="gng-target" onclick="gngTap()" style="width:120px;height:120px;border-radius:50%;margin:40px auto;background:${circleColor};cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px ${circleColor}40;transition:transform 0.1s">
+        <span style="font-size:32px;color:#fff;font-weight:800">${isGo?'GO':'✕'}</span>
+      </div>
+      <div style="font-size:12px;color:var(--dim)">${isGo?'Tap the circle!':'Don\'t tap!'}</div>
+    </div>`;
+    stimT=Date.now();
+    tmr=setTimeout(()=>{if(!responded){if(isGo)misses++;else correctRejects++;}nextTrial();},1500);
+  }
+
+  window.gngTap=function(){
+    if(responded)return;responded=true;clearTimeout(tmr);
+    const rt=Date.now()-stimT;
+    if(isGo){hits++;rts.push(rt);}
+    else{falseAlarms++;}
+    setTimeout(nextTrial,400);
+  };
+
+  draw();
+}
+
+// ── DIGIT SYMBOL SUBSTITUTION (Processing Speed + Visual Scanning) ──
+// Match symbols to digits using a key. Standard neuropsych measure.
+function gameDigitSymbol() {
+  const area = document.getElementById('game-area');
+  const symbols=['◆','●','▲','■','★','♦','◇','▼','○'];
+  let phase='ready',correct=0,total=0,timeLeft=60,currentDigit=0,intv=null;
+
+  function draw(){
+    if(phase==='ready'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">🔢</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Symbol Match</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6">Each number (1-9) has a matching symbol.<br>Use the key to tap the correct symbol.<br>Match as many as you can in 60 seconds.</div><button class="btn" id="ds-start">Start</button></div>`;
+      document.getElementById('ds-start')?.addEventListener('click',()=>{phase='play';currentDigit=Math.floor(Math.random()*9)+1;startTimer();drawPlay();});
+    }
+  }
+
+  function startTimer(){
+    intv=setInterval(()=>{
+      timeLeft--;
+      const tEl=document.getElementById('ds-timer');
+      const pEl=document.getElementById('ds-prog');
+      if(tEl)tEl.textContent=timeLeft+'s';
+      if(pEl)pEl.style.width=((60-timeLeft)/60*100)+'%';
+      if(timeLeft<=0){clearInterval(intv);
+        const score=Math.min(100,Math.round((correct/Math.max(1,total))*100*(1+correct/30)));
+        taskComplete('digitSymbol',score);
+      }
+    },1000);
+  }
+
+  function drawPlay(){
+    const keyHtml=symbols.map((s,i)=>`<div style="text-align:center;font-size:10px"><div style="font-size:16px">${s}</div><div style="color:var(--dim)">${i+1}</div></div>`).join('');
+    area.innerHTML=`<div class="text-center">
+      <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim)">Matched: ${correct}</span><span id="ds-timer" style="font-size:13px;color:${timeLeft<=10?'var(--danger)':'var(--accent)'};font-weight:700">${timeLeft}s</span></div>
+      <div class="progress"><div class="progress-fill" id="ds-prog" style="width:${(60-timeLeft)/60*100}%;background:var(--purple)"></div></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 4px;margin:16px 0 8px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">${keyHtml}</div>
+      <div style="font-size:14px;color:var(--dim);margin:12px 0 4px">Which symbol matches:</div>
+      <div style="font-size:48px;font-weight:900;color:var(--accent);margin-bottom:16px">${currentDigit}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+        ${symbols.map((s,i)=>`<button onclick="dsTap(${i+1})" style="width:52px;height:52px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-size:22px;cursor:pointer;transition:all 0.12s">${s}</button>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  window.dsTap=function(num){
+    total++;
+    if(num===currentDigit)correct++;
+    currentDigit=Math.floor(Math.random()*9)+1;
+    drawPlay();
+  };
+
+  draw();
+}
+
+// ── CATEGORY FLUENCY (Language + Semantic Memory + Executive Function) ──
+// Name as many items in a category as you can in 60 seconds. Typed input.
+function gameFluency() {
+  const area = document.getElementById('game-area');
+  const categories=['Animals','Fruits','Countries','Tools','Vegetables','Sports','Musical Instruments','Clothing'];
+  const category=categories[Math.floor(Math.random()*categories.length)];
+  let phase='ready',timeLeft=60,words=[],intv=null;
+
+  function draw(){
+    if(phase==='ready'){
+      area.innerHTML=`<div class="text-center" style="padding:28px 0"><div style="font-size:44px;margin-bottom:14px">💬</div><div style="font-size:16px;font-weight:600;margin-bottom:6px">Category Fluency</div><div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.6">Name as many <strong style="color:var(--text)">${category}</strong> as you can<br>in 60 seconds. Type each one and press Enter.</div><button class="btn" id="flu-start">Start</button></div>`;
+      document.getElementById('flu-start')?.addEventListener('click',()=>{phase='play';startTimer();drawPlay();});
+    }
+  }
+
+  function startTimer(){
+    intv=setInterval(()=>{
+      timeLeft--;
+      const tEl=document.getElementById('flu-timer');
+      const pEl=document.getElementById('flu-prog');
+      if(tEl){tEl.textContent=timeLeft+'s';tEl.style.color=timeLeft<=10?'var(--danger)':'var(--accent)';}
+      if(pEl)pEl.style.width=((60-timeLeft)/60*100)+'%';
+      if(timeLeft<=0){clearInterval(intv);finish();}
+    },1000);
+  }
+
+  function drawPlay(){
+    area.innerHTML=`<div class="text-center">
+      <div class="flex-between mb-8"><span style="font-size:12px;color:var(--dim)">Category: <strong style="color:var(--text)">${category}</strong></span><span id="flu-timer" style="font-size:13px;color:var(--accent);font-weight:700">${timeLeft}s</span></div>
+      <div class="progress"><div class="progress-fill" id="flu-prog" style="width:${(60-timeLeft)/60*100}%;background:var(--success)"></div></div>
+      <div style="margin:16px 0 8px">
+        <input class="input" id="flu-input" placeholder="Type a ${category.toLowerCase().slice(0,-1)}..." autofocus style="text-align:center;font-size:16px">
+      </div>
+      <div style="font-size:24px;font-weight:800;color:var(--accent);margin:8px 0">${words.length}</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:10px">words entered</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-height:100px;overflow-y:auto">
+        ${words.map(w=>`<span style="padding:4px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--border);font-size:12px">${w}</span>`).join('')}
+      </div>
+    </div>`;
+    const inp=document.getElementById('flu-input');
+    inp?.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){
+        const w=inp.value.trim().toLowerCase();
+        if(w&&!words.includes(w)){words.push(w);drawPlay();}
+        else{inp.value='';inp.focus();}
+      }
+    });
+    inp?.focus();
+  }
+
+  function finish(){
+    // Normative: healthy adults produce ~18-22 animals/min. MCI ~12-15.
+    // Score: map word count to 0-100 scale
+    const count=words.length;
+    const unique=new Set(words.map(w=>w.toLowerCase())).size;
+    const score=Math.min(100,Math.round((unique/22)*100));
+    taskComplete('fluency',score);
+  }
+
+  draw();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SELF-TEST AT HOME MODULE
+   No account needed. Data stored unencrypted in localStorage
+   (it's the user's own data on their own device — no privacy concern).
+   Reuses the same game engines but with its own history/dashboard.
+   ════════════════════════════════════════════════════════════════════ */
+
+const SELF = {
+  _KEY: 'nt_self',
+  load() { try { return JSON.parse(localStorage.getItem(this._KEY)) || { name:'', sessions:[] }; } catch { return { name:'', sessions:[] }; } },
+  save(data) { localStorage.setItem(this._KEY, JSON.stringify(data)); },
+  clear() { localStorage.removeItem(this._KEY); },
+};
+
+/* ── Self-Test Home ── */
+function renderSelfHome(app) {
+  const data = SELF.load();
+  const h = data.sessions || [];
+  const latest = h.length > 0 ? h[h.length-1] : null;
+  const risk = h.length >= 2 ? assessRisk(h) : 'insufficient';
+  const ri = RISK_INFO[risk];
+  const slopes = h.length >= 2 ? getDomainSlopes(h) : null;
+  const preds = h.length >= 2 ? predictFuture(h, 6) : [];
+
+  let html = `
+    <div class="flex-between mb-24" style="flex-wrap:wrap;gap:12px;align-items:flex-start">
+      <div>
+        <button class="back-link" onclick="state.view='login';render()">← Back to Login</button>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px">🏠 Self-Test at Home</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:4px">${h.length} session${h.length!==1?'s':''} completed${data.name?' · '+data.name:''}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        ${h.length>=2?badge(risk):''}
+        <button class="btn" onclick="state.view='selftest';state.session={taskIdx:-1,scores:{},gameState:null};render()">
+          ${h.length===0?'Take First Test':'+ New Session'}
+        </button>
+      </div>
+    </div>`;
+
+  if (h.length === 0) {
+    html += `<div class="card text-center" style="padding:40px">
+      <div style="font-size:44px;margin-bottom:16px">🧠</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px">Track Your Cognitive Health</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:24px;line-height:1.7;max-width:400px;margin-left:auto;margin-right:auto">
+        Complete 8 brain games (~10 minutes) to measure your working memory,
+        processing speed, recall, executive function, cognitive flexibility,
+        attention, symbol processing, and verbal fluency. Come back monthly to track changes over time.
+      </div>
+      <div style="display:grid;gap:10px;max-width:360px;margin:0 auto 24px">
+        ${TASKS.map((t,i) => `<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:var(--surface);border:1px solid var(--border);text-align:left">
+          <div style="font-size:24px">${t.icon}</div>
+          <div><div style="font-size:14px;font-weight:600">${t.name}</div><div style="font-size:11px;color:var(--dim)">${['Spatial pattern recall','Reaction time & consistency','Word memorisation & recall','Colour-word interference','Visual scanning & set-shifting','Impulse control & attention','Processing speed & scanning','Semantic memory & retrieval'][i]}</div></div>
+        </div>`).join('')}
+      </div>
+      ${!data.name?`<div style="max-width:300px;margin:0 auto 16px">
+        <input class="input" id="self-name" placeholder="Your name (optional)" style="text-align:center">
+      </div>`:''}
+      <button class="btn" onclick="startSelfTest()">Start Assessment</button>
+      <div style="margin-top:20px;font-size:11px;color:var(--faint);line-height:1.6">
+        Results saved privately on this device only.<br>
+        This is not a medical diagnostic tool — see a doctor if you have concerns.
+      </div>
+    </div>`;
+  } else {
+    // ── Score summary ──
+    html += `<div class="grid-auto mb-12">
+      <div class="card card-accent text-center">
+        <div style="font-size:11px;color:var(--purple);margin-bottom:4px;font-weight:600;letter-spacing:1px">COMPOSITE</div>
+        <div style="font-size:36px;font-weight:900;color:var(--purple);line-height:1">${latest.composite}</div>
+        ${h.length>=2?`<div style="font-size:12px;font-weight:700;margin-top:4px;color:${(latest.composite-h[h.length-2].composite)>0?'var(--success)':(latest.composite-h[h.length-2].composite)<0?'var(--danger)':'var(--dim)'}">${(latest.composite-h[h.length-2].composite)>0?'+':''}${(latest.composite-h[h.length-2].composite).toFixed(1)} from last</div>`:''}
+      </div>`;
+    const ccMap={memory:'card-memory',reaction:'card-reaction',delayedRecall:'card-recall',executive:'card-executive',trails:'card-trails',gonogo:'card-gonogo',digitSymbol:'card-digitsymbol',fluency:'card-fluency'};
+    for (const [k,d] of Object.entries(DOMAIN)) {
+      if (k==='composite') continue;
+      html += `<div class="card ${ccMap[k]||''} text-center">
+        <div style="font-size:11px;color:${d.color};margin-bottom:4px;font-weight:600">${d.icon} ${d.label.split(' ')[0]}</div>
+        <div style="font-size:24px;font-weight:700">${latest[k]!=null?latest[k].toFixed(1):'—'}</div>
+        ${slopes?`<div style="font-size:11px;margin-top:3px;color:${slopes[k].slope>0.5?'var(--success)':slopes[k].slope<-0.5?'var(--danger)':'var(--dim)'}">${slopes[k].slope>0?'↑':'↓'} ${Math.abs(slopes[k].slope).toFixed(2)}/ses</div>`:''}
+      </div>`;
+    }
+    html += `</div>`;
+
+    // ── Trajectory chart ──
+    html += `<div class="card mb-12"><div class="section-title">Your Cognitive Trajectory</div><div class="chart-wrap"><canvas id="chart-traj"></canvas></div></div>`;
+
+    // ── Prediction ──
+    if (preds.length>0) {
+      html += `<div class="card mb-12"><div class="section-title">6-Month Forecast</div><div class="chart-wrap chart-wrap-sm"><canvas id="chart-pred"></canvas></div></div>`;
+    }
+
+    // ── Slopes ──
+    if (slopes) {
+      html += `<div class="card mb-12"><div class="section-title">Domain Trends</div>`;
+      for (const [d,reg] of Object.entries(slopes)) {
+        const dir=reg.slope>0.5?'↑':reg.slope<-0.5?'↓':'→';
+        const c=reg.slope>0.5?'var(--success)':reg.slope<-0.5?'var(--danger)':'var(--dim)';
+        html += `<div class="slope-row" style="border-left-color:${DOMAIN[d].color}">
+          <div class="slope-dot" style="background:${DOMAIN[d].color}"></div>
+          <div style="flex:1;font-size:13px">${DOMAIN[d].label}</div>
+          <div style="font-size:14px;font-weight:700;color:${c}">${dir} ${Math.abs(reg.slope).toFixed(2)}/ses</div>
+          <div style="font-size:11px;color:var(--faint);width:55px;text-align:right">R²=${reg.r2.toFixed(2)}</div>
+        </div>`;
+      }
+      html += `</div>`;
+    }
+
+    // ── Session log ──
+    html += `<div class="card mb-12"><div class="section-title">Session History</div><div style="max-height:220px;overflow-y:auto">`;
+    for (let i=h.length-1;i>=0;i--) {
+      const s=h[i];const p2=i>0?h[i-1]:null;const d2=p2?s.composite-p2.composite:0;
+      html += `<div class="log-row">
+        <div style="font-size:12px;color:var(--accent);font-weight:700;width:28px">S${s.session}</div>
+        <div style="font-size:12px;color:var(--dim);flex:1">${s.date}${s.time?' · '+s.time:''}</div>
+        <div style="font-size:16px;font-weight:700">${s.composite}</div>
+        ${p2?`<div style="font-size:12px;font-weight:600;width:45px;text-align:right;color:${d2>0?'var(--success)':d2<0?'var(--danger)':'var(--dim)'}">${d2>0?'+':''}${d2.toFixed(1)}</div>`:''}
+      </div>`;
+    }
+    html += `</div></div>`;
+
+    // ── Interpretation guide ──
+    if (h.length>=2) {
+      html += `<div class="card" style="border-left:3px solid var(--accent)">
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px">📖 Understanding Your Results</div>
+        <div style="font-size:13px;color:var(--dim);line-height:1.8">
+          <p>Your overall status is <strong style="color:${ri.color}">${ri.label}</strong>. ${
+            risk==='stable'?"Your scores are consistent — no concerning patterns detected."
+            :risk==='improving'?"Your scores are trending upward — great progress!"
+            :risk==='mild'?"Some mild changes detected. This could be normal variation, stress, or fatigue. Keep tracking and consult a doctor if concerned."
+            :risk==='moderate'?"A moderate trend has been detected. We recommend discussing these results with your GP or a healthcare professional."
+            :risk==='significant'?"A significant trend has been detected. Please consult a healthcare professional to discuss further assessment."
+            :"Keep completing sessions to build a clearer picture."
+          }</p>
+          ${preds.length>0?`<p style="margin-top:6px">Based on your trend, your projected score in 6 months is <strong style="color:var(--text)">${preds[preds.length-1].predicted}</strong> (range: ${preds[preds.length-1].lower}–${preds[preds.length-1].upper}).</p>`:''}
+          <p style="margin-top:8px;font-size:10px;font-style:italic;opacity:0.5">
+            This tool is for personal tracking only and is not a medical diagnostic. Always consult a healthcare professional if you have concerns about your cognitive health.
+          </p>
+        </div>
+      </div>`;
+    }
+
+    // ── Actions ──
+    html += `<div class="card">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Actions</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="startSelfTest()">+ New Session</button>
+        <button class="btn btn-sm btn-ghost" onclick="exportSelfData()">📤 Export My Data</button>
+        <button class="btn btn-sm btn-danger" onclick="showSelfClearModal()">🗑️ Clear All Data</button>
+      </div>
+    </div>`;
+  }
+
+  app.innerHTML = html;
+
+  // Render charts
+  if (h.length>0) setTimeout(()=>{
+    renderTrajectoryChart(h);
+    if (preds.length>0) renderPredictionChart(h, preds);
+  },50);
+}
+
+function startSelfTest() {
+  const nameEl = document.getElementById('self-name');
+  if (nameEl && nameEl.value.trim()) {
+    const data = SELF.load();
+    data.name = nameEl.value.trim();
+    SELF.save(data);
+  }
+  state.session = { taskIdx: -1, scores: {}, gameState: null };
+  state.view = 'selftest';
+  render();
+}
+
+/* ── Self-Test Session Runner ── */
+function renderSelfTest(app) {
+  const data = SELF.load();
+  if (!state.session) state.session = { taskIdx: -1, scores: {}, gameState: null };
+  const ss = state.session;
+  const sesNum = (data.sessions||[]).length + 1;
+
+  let html = `<button class="back-link" onclick="state.view='selfhome';state.session=null;render()">← Cancel</button>
+    <div class="text-center mb-16"><div style="font-size:12px;color:var(--dim);letter-spacing:2px">SELF-TEST · SESSION ${sesNum}</div></div>`;
+
+  html += `<div class="task-dots">`;
+  for (let i=0;i<TASKS.length;i++) {
+    const w=i===ss.taskIdx?28:10;
+    const bg=i<ss.taskIdx?DOMAIN[TASKS[i].id].color:i===ss.taskIdx?'var(--accent)':'rgba(255,255,255,0.06)';
+    const shadow=i===ss.taskIdx?'0 0 12px var(--accent-glow)':'none';
+    html += `<div class="task-dot" style="width:${w}px;background:${bg};box-shadow:${shadow}"></div>`;
+  }
+  html += `</div>`;
+  html += `<div class="card" style="max-width:400px;margin:0 auto" id="game-area"></div>`;
+  app.innerHTML = html;
+
+  if (ss.taskIdx < 0) renderSelfGameIntro(data);
+  else if (ss.taskIdx < TASKS.length) startGame(TASKS[ss.taskIdx].id, null);
+  else renderSelfSessionResults(data);
+}
+
+function renderSelfGameIntro(data) {
+  const area = document.getElementById('game-area');
+  if (!area) return;
+  const sesNum = (data.sessions||[]).length + 1;
+  area.innerHTML = `<div class="text-center">
+    <div style="font-size:13px;color:var(--dim);letter-spacing:2px;margin-bottom:6px">SESSION ${sesNum}</div>
+    <div style="font-size:20px;font-weight:700;margin-bottom:6px">Brain Health Check</div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:20px">8 quick games · ~10 minutes</div>
+    ${TASKS.map((t,i) => `<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:var(--surface);border:1px solid var(--border);margin-bottom:8px;text-align:left">
+      <div style="font-size:24px">${t.icon}</div>
+      <div><div style="font-size:14px;font-weight:600">${t.name}</div></div>
+      <div style="margin-left:auto;font-size:11px;color:var(--faint)">#${i+1}</div>
+    </div>`).join('')}
+    <button class="btn mt-16" onclick="state.session.taskIdx=0;state.view='selftest';render()">Begin</button>
+  </div>`;
+}
+
+function renderSelfSessionResults(data) {
+  const area = document.getElementById('game-area');
+  if (!area) return;
+  const ss = state.session;
+  const comp = computeComposite(ss.scores);
+  area.innerHTML = `<div class="text-center">
+    <div style="font-size:40px;margin-bottom:12px">✨</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">Session Complete!</div>
+    <div style="font-size:12px;color:var(--dim);margin-bottom:20px">Saving results...</div>
+    <div style="font-size:48px;font-weight:900;color:var(--accent);margin-bottom:16px">${comp}</div>
+    <div class="grid-2">
+      ${TASKS.map(t => `<div class="score-mini"><div class="score-mini-label" style="color:${DOMAIN[t.id].color}">${t.icon} ${t.name}</div><div class="score-mini-val">${ss.scores[t.id]!=null?ss.scores[t.id].toFixed(1):'—'}</div></div>`).join('')}
+    </div>
+  </div>`;
+
+  // Save to self-test history
+  const result = {
+    ...ss.scores, composite: comp,
+    date: new Date().toISOString().slice(0,10),
+    time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+    session: (data.sessions||[]).length + 1
+  };
+  data.sessions = [...(data.sessions||[]), result];
+  SELF.save(data);
+  setTimeout(() => { state.session=null; state.view='selfhome'; render(); }, 2800);
+}
+
+// Unified taskComplete — routes to correct view based on mode
+function taskComplete(taskId, score) {
+  state.session.scores[taskId] = Math.round(score * 10) / 10;
+  state.session.taskIdx++;
+  if (state.view === 'selftest') {
+    setTimeout(() => { state.view='selftest'; render(); }, 500);
+  } else {
+    setTimeout(() => navigate('session', state.activeId), 500);
+  }
+}
+
+function exportSelfData() {
+  const data = SELF.load();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'neurotrack_selftest_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function showSelfClearModal() {
+  const ov = document.createElement('div'); ov.className='modal-overlay'; ov.onclick=()=>ov.remove();
+  ov.innerHTML=`<div class="modal-box card text-center" onclick="event.stopPropagation()">
+    <div style="font-size:28px;margin-bottom:12px">🗑️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--danger)">Clear Self-Test Data?</div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:16px;line-height:1.6">This deletes all your self-test sessions and scores. This cannot be undone.</div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" onclick="SELF.clear();this.closest('.modal-overlay').remove();state.view='selfhome';render()">Clear All</button>
+    </div></div>`;
+  document.body.appendChild(ov);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════════════ */
+render();
+</script>
+</body>
+</html>
